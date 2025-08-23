@@ -1,0 +1,3085 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exportar Ventas a CSV</title>
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest"
+          href="data:application/json;base64,eyJuYW1lIjoiU2lzdGVtYSBkZSBMb3RlcmlhIiwic2hvcnRfbmFtZSI6IkxvdGVyaWEiLCJzdGFydF91cmwiOiIvIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2ZmZmZmZiIsInRoZW1lX2NvbG9yIjoiIzAwN2JmZiJ9">
+    <title>Sistema de Lotería</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --main-button-color: #ffb347;
+            --button-hover-color: #ffa533;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #fff;
+            display: flex;
+            justify-content: center; /* horizontal center */
+            align-items: center;
+        }
+
+        #loginPage {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .container {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            width: 100%;
+        }
+
+        .input-group select,
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #ffffff;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #d0d0d0;
+        }
+
+        .ticket-preview {
+            background: white;
+            padding: 20px;
+            max-width: 400px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .ticket-content {
+            padding: 15px;
+        }
+
+        .ticket-header {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .ticket-info {
+            font-size: 1.2em;
+        }
+
+        .ticket-numbers p {
+            font-family: monospace;
+            font-size: 2.0em !important;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .ticket-total {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        #qrcode {
+            margin: 20px auto;
+            text-align: center;
+            padding: 15px;
+            background: white;
+        }
+
+        .total {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .scanner-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .ticket-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+
+        .ticket-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        /* Nuevos estilos para los botones de editar y eliminar */
+        .ticket-actions button {
+            padding: 5px 10px; /* Tamaño más pequeño */
+            font-size: 12px;   /* Texto más pequeño */
+            margin: 2px;       /* Espaciado entre botones */
+            border-radius: 4px; /* Bordes redondeados */
+            background-color: var(--main-button-color); /* Color principal */
+            color: white;      /* Texto en blanco */
+            border: none;      /* Sin borde */
+            cursor: pointer;   /* Cursor de mano */
+            transition: background-color 0.3s; /* Transición suave */
+        }
+
+        .ticket-actions button:hover {
+            background-color: var(--button-hover-color); /* Color al pasar el mouse */
+        }
+
+        /* Estilos específicos para el botón de eliminar */
+        .ticket-actions button:last-child {
+            background-color: #ff4d4d; /* Color rojo para el botón de eliminar */
+        }
+
+        .ticket-actions button:last-child:hover {
+            background-color: #cc0000; /* Color rojo oscuro al pasar el mouse */
+        }
+
+        /* Estilos para la tabla */
+        #numbersList table {
+            width: 100%;
+            border-collapse: collapse; /* Elimina el espacio entre celdas */
+        }
+
+        /* Estilos para el logo con imagen */
+    .ticket-logo {
+        width: 120px;
+        height: 80px;
+        margin: 10px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ticket-logo img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+        #numbersList th,
+        #numbersList td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd; /* Línea divisoria entre filas */
+        }
+
+        #numbersList th {
+            background-color: #f2f2f2; /* Fondo gris claro para el encabezado */
+        }
+
+        /* Ajustar el ancho de las columnas */
+        #numbersList td:nth-child(1) { width: 30%; } /* Columna del número */
+        #numbersList td:nth-child(2) { width: 20%; } /* Columna de los tiempos */
+        #numbersList td:nth-child(3) { width: 20%; } /* Columna del subtotal */
+        #numbersList td:nth-child(4) { width: 30%; } /* Columna de los botones */
+            /* Estilos para la cuadrícula de tiempos vendidos */
+          /* Estilos para la cuadrícula de tiempos vendidos (mantener en 5 columnas) */
+        #numberSalesGrid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* 5 columnas para tiempos vendidos */
+            gap: 1px; /* Espacio entre los números */
+            border: 1px solid #ccc; /* Borde exterior de la cuadrícula */
+            background-color: #ccc; /* Color de fondo para las líneas de la cuadrícula */
+        }
+
+        /* Estilos para la cuadrícula de billetes vendidos (cambiar a 4 columnas) */
+        #billetesSalesGrid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columnas para billetes vendidos */
+            gap: 1px; /* Espacio entre los números */
+            border: 1px solid #ccc; /* Borde exterior de la cuadrícula */
+            background-color: #ccc; /* Color de fondo para las líneas de la cuadrícula */
+        }
+
+        /* Estilos comunes para los items */
+        .number-item, .billete-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px; /* Reducir el padding */
+            background-color: #ffffff; /* Fondo blanco para cada celda */
+            border: 1px solid #ccc; /* Borde para cada celda */
+        }
+
+        .number-item span, .billete-item span {
+            font-size: 0.9em; /* Reducir el tamaño de la fuente */
+            font-weight: bold;
+        }
+
+        .number-item span:first-child, .billete-item span:first-child {
+            color: #000000; /* Color negro para el número */
+        }
+
+        .number-item span:last-child, .billete-item span:last-child {
+            color: red; /* Color rojo para los tiempos vendidos */
+        }
+
+        .number-item.highlight, .billete-item.highlight {
+            background-color: #e0f7ff; /* Azul claro */
+        }
+            /* Estilos para las pestañas */
+            .tabs {
+                display: flex;
+                border-bottom: 1px solid #ccc;
+                margin-bottom: 15px;
+            }
+
+            .tab-button {
+                padding: 10px 20px;
+                background: none;
+                border: none;
+                cursor: pointer;
+            }
+
+            .tab-button.active {
+                border-bottom: 2px solid #1890ff;
+                font-weight: bold;
+            }
+
+            .info-text {
+                margin-bottom: 10px;
+                font-style: italic;
+            }
+        .ticket-item p {
+            margin: 5px 0; /* Espaciado entre los párrafos */
+            font-size: 14px; /* Tamaño de fuente */
+        }
+
+        .ticket-item strong {
+            color: #333; /* Color del texto en negrita */
+        }
+    /* Estilos para el resumen de totales */
+    .sales-summary-box {
+        background-color: #f8f9fa;
+        border: 2px solid #007bff;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    .sales-summary-box h3 {
+        margin-top: 0;
+        color: #007bff;
+        font-size: 1.2em;
+    }
+
+    .summary-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    .stat-item {
+        background-color: white;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #dee2e6;
+    }
+
+    .stat-value {
+        font-size: 1.4em;
+        font-weight: bold;
+        color: #28a745;
+    }
+
+    .stat-label {
+        font-size: 0.9em;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+
+    /* Estilos para el botón de captura */
+    .screenshot-button {
+        background-color: #25D366 !important;
+        color: white !important;
+        border: none !important;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin: 15px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background-color 0.3s;
+        width: 100%;
+    }
+
+    .screenshot-button:hover {
+        background-color: #1eb854 !important;
+    }
+
+    .screenshot-button:disabled {
+        background-color: #ccc !important;
+        cursor: not-allowed;
+    }
+
+    .capturing {
+        background-color: #ff9800 !important;
+    }
+
+    .screenshot-container {
+        background-color: white;
+        padding: 0;
+        margin: 0;
+    }
+
+    .screenshot-header {
+        background-color: #007bff;
+        color: white;
+        padding: 15px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .screenshot-header h2 {
+        margin: 0;
+        font-size: 1.8em;
+    }
+
+    .screenshot-header .filters-info {
+        margin-top: 10px;
+        font-size: 0.9em;
+        opacity: 0.9;
+    }
+
+    </style>
+</head>
+<body>
+
+<div id="loginPage" style="display: none;">
+    <h2>Ingrese contraseña de la app:</h2>
+    <div class="input-group">
+        <input type="password" id="passwordInput" placeholder="Contraseña" />
+        <button onclick="checkPassword()">Confirmar</button>
+    </div>
+    <p id="error" style="color:red;"></p>
+</div>
+
+<div id="mainPage" class="container" style="display: none;">
+    <!-- Fecha y hora actual -->
+    <div id="datetime" style="text-align: right; margin-bottom: 15px; font-size: 1.1em;"></div>
+    
+    <!-- Campo para el nombre del cliente -->
+    <div class="input-group" style="margin-bottom: 15px;">
+        <input type="text" id="customerName" placeholder="Nombre del Cliente">
+    </div>
+
+    <!-- Selección de lotería y hora en una fila -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+        <div class="input-group">
+            <select id="lotteryType" onchange="updateDrawTimes()">
+    <option value="">Elegir loteria</option>
+    <option value="PANAMA">LOTERIA PANAMA</option>
+    <option value="NICA">NICA</option>
+    <option value="MONAZO">MONAZO</option>
+    <option value="LAPRIMERA">LAPRIMERA</option>
+    <option value="TICA">TICA</option>
+    <option value="NEWYORK">NEW YORK</option>
+    <option value="" disabled>────── REVENTADO ──────</option>
+    <option value="REVENTADO_PANAMA">REVENTADO PANAMA</option>
+    <option value="REVENTADO_NICA">REVENTADO NICA</option>
+    <option value="REVENTADO_MONAZO">REVENTADO MONAZO</option>
+    <option value="REVENTADO_LAPRIMERA">REVENTADO LA PRIMERA</option>
+    <option value="REVENTADO_TICA">REVENTADO TICA</option>
+    <option value="REVENTADO_NEWYORK">REVENTADO NEW YORK</option>
+</select>
+        </div>
+        <div class="input-group">
+            <select id="drawTimeSelect" disabled>
+                <option value="">Hora de sorteo</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Número y pedazos en una fila -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+        <div class="input-group">
+            <input type="number" id="number" placeholder="NUMERO">
+        </div>
+        <div class="input-group">
+            <input type="number" id="pieces" placeholder="TIEMPOS">
+        </div>
+    </div>
+    <button onclick="addNumber()">AGREGAR</button>
+
+    <!-- Entrada Rápida -->
+    <div style="margin-top: 15px; margin-bottom: 15px;">
+        <label for="quickInput" style="display: block; margin-bottom: 5px; font-weight: bold;">Entrada Rápida:</label>
+        <div style="display: flex; gap: 10px;">
+            <div class="input-group" style="flex-grow: 1;">
+                <input type="text" id="quickInput" placeholder="Ej: 39,9 o 45,2 o 12,5">
+            </div>
+            <button onclick="processQuickInput()" style="width: auto; padding: 12px 20px;">
+                Procesar
+            </button>
+        </div>
+    </div>
+
+    <!-- Lista de números -->
+    <div id="numbersList">
+        <table style="width: 100%">
+            <thead>
+                <tr>
+                    <th>NUMERO</th>
+                    <th>CANT</th>
+                    <th>SUB TOTAL</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="numbersTableBody"></tbody>
+        </table>
+    </div>
+
+    <div id="totalValue" class="total">VALOR DE TICKET: 0.00$</div>
+
+    <button onclick="generateTicket()">GENERAR TICKET</button>
+    <button onclick="showSalesPage()">VER VENTAS</button>
+    <button onclick="showNumberSalesPage()">TIEMPOS VENDIDOS</button>
+    <button onclick="showVerifyWinnersPage()">Verificar Ganadores</button>
+
+    <!-- Vista previa del ticket -->
+    <div id="ticketPreview" class="ticket-preview">
+        <div class="ticket-logo">
+            <img src="" alt="Los Tios Logo">
+        </div>
+        <div class="ticket-header">APM13</div>
+        <div id="ticketContent" class="ticket-content"></div>
+        <div id="qrcode"></div>
+        <div class="ticket-actions">
+            <button onclick="compartirTicket()">COMPARTIR TICKET</button>
+            <button onclick="closeTicket()">CERRAR</button>
+        </div>
+    </div>
+</div>
+
+<!-- Página de Ventas -->
+<div id="salesPage" class="container" style="display: none;">
+    <h2>Registro de Ventas</h2>
+    <div style="margin-bottom: 20px;">
+        <h3>Buscar tickets</h3>
+    </div>
+    <div class="input-group">
+        <input type="text" id="searchInput" placeholder="Buscar por ID de ticket">
+        <button onclick="searchTickets()">Buscar</button>
+        <button onclick="toggleScanner()">ESCANEAR QR</button>
+    </div>
+    <div class="scanner-container" id="scannerContainer">
+        <div id="reader"></div>
+    </div>
+    <button onclick="showMainPage()">Volver</button>
+
+    <div class="sales-summary">
+        <h3>Resumen de Ventas</h3>
+        <div class="date-selector">
+            <input type="date" id="salesDate" onchange="showSalesByDate(this.value)">
+            <button onclick="showTodaySales()">Ver Ventas de Hoy</button>
+            <button onclick="deleteSalesByDate()" style="background-color: #ff4d4d; color: white;">
+                Borrar Ventas del Día Seleccionado
+            </button>
+        </div>
+        <div class="sales-stats">
+            <p><strong>Fecha:</strong> <span id="currentSalesDate"></span></p>
+            <p><strong>Total Tickets:</strong> <span id="totalTickets">0</span></p>
+            <p><strong>Total Ventas:</strong> $<span id="totalSales">0.00</span></p>
+        </div>
+    </div>
+
+    <div id="ticketsList" class="ticket-list"></div>
+</div>
+
+<!-- Página de Tiempos y Billetes Vendidos -->
+<div id="numberSalesPage" class="container" style="display: none;">
+    <h2>TIEMPOS Y BILLETES VENDIDOS</h2>
+
+    <!-- Pestañas para alternar entre tiempos y billetes -->
+    <div class="tabs">
+        <button id="tiemposTab" class="tab-button active" onclick="switchTab('tiempos')">Tiempos Vendidos</button>
+        <button id="billetesTab" class="tab-button" onclick="switchTab('billetes')">Billetes Vendidos</button>
+    </div>
+
+    <!-- Filtros -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+        <div class="input-group">
+            <select id="filterLotteryType" onchange="updateFilterDrawTimes()">
+                <option value="">Todas las Loterías</option>
+                <option value="PANAMA">LOTERIA PANAMA</option>
+                <option value="NICA">NICA</option>
+                <option value="MONAZO">MONAZO</option>
+                <option value="LAPRIMERA">LAPRIMERA</option>
+                <option value="TICA">TICA</option>
+                <option value="NEWYORK">NEW YORK</option>
+                <option value="" disabled>────── REVENTADO ──────</option>
+                <option value="REVENTADO_PANAMA">REVENTADO PANAMA</option>
+                <option value="REVENTADO_NICA">REVENTADO NICA</option>
+                <option value="REVENTADO_MONAZO">REVENTADO MONAZO</option>
+                <option value="REVENTADO_LAPRIMERA">REVENTADO LA PRIMERA</option>
+                <option value="REVENTADO_TICA">REVENTADO TICA</option>
+                <option value="REVENTADO_NEWYORK">REVENTADO NEW YORK</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <select id="filterDrawTimeSelect" disabled>
+                <option value="">Todas las Horas</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Filtro por fecha -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+        <div class="input-group">
+            <input type="date" id="salesFilterDate" onchange="applyFilters()">
+        </div>
+        <button onclick="applyFilters()">Aplicar Filtros</button>
+    </div>
+
+    <!-- Resumen de totales -->
+    <div id="salesSummaryBox" class="sales-summary-box" style="display: none;">
+        <h3>Resumen de Ventas</h3>
+        <div class="summary-stats">
+            <div class="stat-item">
+                <div class="stat-value" id="totalTiempos">0</div>
+                <div class="stat-label">Cantidad</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalColones">$0</div>
+                <div class="stat-label">Valor</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón de captura de pantalla -->
+    <button id="screenshotButton" class="screenshot-button" onclick="captureAndShareScreen()">
+        📸 Capturar y Compartir por WhatsApp
+    </button>
+
+    <!-- Contenedor para tiempos vendidos (2 cifras) -->
+    <div id="tiemposContainer">
+        <div id="numberSalesGrid">
+            <!-- Aquí se llenarán los números del 00 al 99 -->
+        </div>
+        <button onclick="shareReport('tiempos')" style="margin-top: 20px;">Compartir Reporte de Tiempos</button>
+    </div>
+
+    <!-- Contenedor para billetes vendidos (4 cifras) -->
+    <div id="billetesContainer" style="display: none;">
+        <div id="billetesSalesGrid">
+            <!-- Aquí se llenarán los billetes vendidos de 4 cifras -->
+        </div>
+        <button onclick="shareReport('billetes')" style="margin-top: 20px;">Compartir Reporte de Billetes</button>
+    </div>
+
+    <!-- Botón para volver a la página principal -->
+    <button onclick="showMainPage()" style="margin-top: 20px;">Volver</button>
+</div>
+
+<!-- Página de verificar ganadores -->
+<div id="verifyWinnersPage" class="container" style="display: none;">
+    <h2>Verificar Tickets Ganadores</h2>
+
+    <!-- Filtros -->
+    <div style="margin-bottom: 15px;">
+        <h3>Filtrar Tickets</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <div class="input-group">
+                <input type="date" id="winnersFilterDate">
+            </div>
+            <div class="input-group">
+                <select id="filterLottery">
+    <option value="">Todas las Loterías</option>
+    <option value="PANAMA">LOTERIA PANAMA</option>
+    <option value="NICA">NICA</option>
+    <option value="MONAZO">MONAZO</option>
+    <option value="LAPRIMERA">LAPRIMERA</option>
+    <option value="TICA">TICA</option>
+    <option value="NEWYORK">NEW YORK</option>
+    <option value="" disabled>────── REVENTADO ──────</option>
+    <option value="REVENTADO_PANAMA">REVENTADO PANAMA</option>
+    <option value="REVENTADO_NICA">REVENTADO NICA</option>
+    <option value="REVENTADO_MONAZO">REVENTADO MONAZO</option>
+    <option value="REVENTADO_LAPRIMERA">REVENTADO LA PRIMERA</option>
+    <option value="REVENTADO_TICA">REVENTADO TICA</option>
+    <option value="REVENTADO_NEWYORK">REVENTADO NEW YORK</option>
+</select>
+            </div>
+            <div class="input-group">
+                <select id="filterDrawTime" disabled>
+                    <option value="">Todas las Horas</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campos para ingresar los números ganadores -->
+    <div style="margin-bottom: 15px;">
+        <h3>Números Ganadores</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <div class="input-group">
+                <input type="number" id="firstPrize" placeholder="1er Premio" inputmode="numeric" pattern="[0-9]*">
+            </div>
+            <div class="input-group">
+                <input type="number" id="secondPrize" placeholder="2do Premio" inputmode="numeric" pattern="[0-9]*">
+            </div>
+            <div class="input-group">
+                <input type="number" id="thirdPrize" placeholder="3er Premio" inputmode="numeric" pattern="[0-9]*">
+            </div>
+        </div>
+        <button onclick="checkWinningTickets()" style="margin-top: 15px;">Verificar Tickets Ganadores</button>
+    </div>
+    
+    <button onclick="showConfigPage()">Configurar Límites</button>
+
+    <!-- Resultados de los tickets ganadores -->
+    <div id="winningTicketsResult" style="margin-top: 20px;"></div>
+
+    <!-- Botón para volver a la página principal -->
+    <button onclick="showMainPage()" style="margin-top: 20px;">Volver a Ventas</button>
+</div>
+
+<!-- Página de configuración de límites -->
+<div id="configPage" class="container" style="display: none;">
+    <h2>Configuración de Límites de Venta</h2>
+
+    <!-- Pestañas para alternar entre chances y billetes -->
+    <div class="tabs">
+        <button id="chancesLimitTab" class="tab-button active" onclick="switchLimitTab('chances')">
+            Límites de Chances (2 cifras)
+        </button>
+        <button id="billetesLimitTab" class="tab-button" onclick="switchLimitTab('billetes')">
+            Límites de Billetes (4 cifras)
+        </button>
+    </div>
+
+    <!-- Configuración de límites para chances (2 cifras) -->
+    <div id="chancesLimitContainer">
+        <div style="margin-bottom: 15px;">
+            <h3>Configuración de Límites para Chances (2 cifras)</h3>
+
+            <!-- Selector de lotería y hora -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                <div class="input-group">
+                    <select id="limitLotteryType" onchange="updateLimitDrawTimes()">
+    <option value="">Elegir loteria</option>
+    <option value="PANAMA">LOTERIA PANAMA</option>
+    <option value="NICA">NICA</option>
+    <option value="MONAZO">MONAZO</option>
+    <option value="LAPRIMERA">LAPRIMERA</option>
+    <option value="TICA">TICA</option>
+    <option value="NEWYORK">NEW YORK</option>
+    <option value="" disabled>────── REVENTADO ──────</option>
+    <option value="REVENTADO_PANAMA">REVENTADO PANAMA</option>
+    <option value="REVENTADO_NICA">REVENTADO NICA</option>
+    <option value="REVENTADO_MONAZO">REVENTADO MONAZO</option>
+    <option value="REVENTADO_LAPRIMERA">REVENTADO LA PRIMERA</option>
+    <option value="REVENTADO_TICA">REVENTADO TICA</option>
+    <option value="REVENTADO_NEWYORK">REVENTADO NEW YORK</option>
+</select>
+                </div>
+                <div class="input-group">
+                    <select id="limitDrawTimeSelect" disabled>
+                        <option value="">Hora de sorteo</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Configuración general para todos los números -->
+            <div style="margin-bottom: 15px;">
+                <h4>Límite Global para Todos los Números</h4>
+                <div class="input-group">
+                    <input type="number" id="globalChancesLimit" placeholder="Límite global para todos los números (ej: 100)" min="1">
+                </div>
+                <button onclick="setGlobalLimit('chances')" style="margin-top: 10px;">Aplicar Límite Global</button>
+            </div>
+
+            <!-- Configuración individual -->
+            <div style="margin-bottom: 15px;">
+                <h4>Límite Individual por Número</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="input-group">
+                        <input type="number" id="chanceNumber" placeholder="Número (00-99)" min="0" max="99">
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="chanceLimit" placeholder="Límite de tiempos" min="0">
+                    </div>
+                </div>
+                <button onclick="setIndividualLimit('chances')" style="margin-top: 10px;">Aplicar Límite Individual</button>
+            </div>
+
+            <!-- Visualización de límites actuales -->
+            <div style="margin-top: 20px;">
+                <h4>Límites Actuales</h4>
+                <div id="currentChancesLimits" style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+                    <!-- Aquí se mostrarán los límites actuales -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Configuración de límites para billetes (4 cifras) -->
+    <div id="billetesLimitContainer" style="display: none;">
+        <div style="margin-bottom: 15px;">
+            <h3>Configuración de Límites para Billetes (4 cifras)</h3>
+
+            <!-- Selector de lotería y hora -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                <div class="input-group">
+                    <select id="limitBilleteLotteryType" onchange="updateLimitBilleteDrawTimes()">
+    <option value="">Elegir loteria</option>
+    <option value="PANAMA">LOTERIA PANAMA</option>
+    <option value="NICA">NICA</option>
+    <option value="MONAZO">MONAZO</option>
+    <option value="LAPRIMERA">LAPRIMERA</option>
+    <option value="TICA">TICA</option>
+    <option value="NEWYORK">NEW YORK</option>
+    <option value="" disabled>────── REVENTADO ──────</option>
+    <option value="REVENTADO_PANAMA">REVENTADO PANAMA</option>
+    <option value="REVENTADO_NICA">REVENTADO NICA</option>
+    <option value="REVENTADO_MONAZO">REVENTADO MONAZO</option>
+    <option value="REVENTADO_LAPRIMERA">REVENTADO LA PRIMERA</option>
+    <option value="REVENTADO_TICA">REVENTADO TICA</option>
+    <option value="REVENTADO_NEWYORK">REVENTADO NEW YORK</option>
+</select>
+                </div>
+                <div class="input-group">
+                    <select id="limitBilleteDrawTimeSelect" disabled>
+                        <option value="">Hora de sorteo</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Configuración general para todos los billetes -->
+            <div style="margin-bottom: 15px;">
+                <h4>Límite Global para Todos los Billetes</h4>
+                <p class="info-text">Este límite se aplicará a cada número individualmente si no tiene un límite específico.</p>
+                <div class="input-group">
+                    <input type="number" id="globalBilletesLimit" placeholder="Límite global para todos los billetes (ej: 10)" min="1">
+                </div>
+                <button onclick="setGlobalLimit('billetes')" style="margin-top: 10px;">Aplicar Límite Global</button>
+            </div>
+
+            <!-- Configuración individual para billetes -->
+            <div style="margin-bottom: 15px;">
+                <h4>Límite Individual por Billete</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="input-group">
+                        <input type="number" id="billeteNumber" placeholder="Número (0000-9999)" min="0" max="9999">
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="billeteLimit" placeholder="Límite de tiempos" min="0">
+                    </div>
+                </div>
+                <button onclick="setIndividualLimit('billetes')" style="margin-top: 10px;">Aplicar Límite Individual</button>
+            </div>
+
+            <!-- Visualización de límites actuales para billetes -->
+            <div style="margin-top: 20px;">
+                <h4>Límites Actuales</h4>
+                <div id="currentBilletesLimits" style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+                    <!-- Aquí se mostrarán los límites actuales -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón para guardar configuración y volver -->
+    <button onclick="saveConfigAndReturn()" style="margin-top: 20px;">Guardar Configuración y Volver</button>
+</div>
+
+</body>
+
+
+<script>
+    const PASSWORD = "THIAGO190919";
+    const AUTH_KEY = "authenticated";
+
+    function checkPassword() {
+        const input = document.getElementById("passwordInput").value;
+        if (input === PASSWORD) {
+          localStorage.setItem(AUTH_KEY, "true");
+          showMainPage();
+        } else {
+          document.getElementById("error").innerText = "Contraseña incorrecta.";
+        }
+    }
+
+    // On page load
+    document.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem(AUTH_KEY) === "true") {
+            initApp();
+            showMainPage();
+        } else {
+            showLoginPage();
+        }
+    });
+
+    function showLoginPage() {
+        document.getElementById("loginPage").style.display = "block";
+
+        document.getElementById("passwordInput").addEventListener('input', () => {
+            document.getElementById("error").innerText = '';
+        });
+    }
+
+    // Cargar tickets desde localStorage
+    function loadTickets() {
+        const savedTickets = localStorage.getItem('lotteryTickets');
+        return savedTickets ? JSON.parse(savedTickets) : [];
+    }
+
+    // Función para convertir tickets a CSV
+    function convertTicketsToCSV(tickets) {
+        const headers = [
+            "ID",
+            "Fecha",
+            "Loteria",
+            "Hora de sorteo",
+            "Numero",
+            "Pedazos",
+            "Total",
+            "Pagado"
+        ];
+
+        // Crear un array para todas las filas
+        let allRows = [];
+
+        // Procesar cada ticket por separado
+        tickets.forEach(ticket => {
+            // Primera fila con todos los datos y el primer número/pedazo
+            const firstRow = [
+                ticket.id,
+                new Date(ticket.datetime).toLocaleString(),
+                ticket.lottery,
+                ticket.drawTime || "N/A",
+                ticket.numbers[0] ? ticket.numbers[0].number : "",
+                ticket.numbers[0] ? ticket.numbers[0].pieces : "",
+                ticket.total.toFixed(2),
+                ticket.paid ? "Si" : "No"
+            ];
+            allRows.push(firstRow);
+
+            // Filas adicionales con lotería y hora de sorteo repetidas
+            for (let i = 1; i < ticket.numbers.length; i++) {
+                const numberRow = [
+                    "", // ID vacío
+                    "", // Fecha vacía
+                    ticket.lottery, // Lotería repetida
+                    ticket.drawTime || "N/A", // Hora de sorteo repetida
+                    ticket.numbers[i].number, // Número
+                    ticket.numbers[i].pieces, // Pedazos
+                    "", // Total vacío
+                    "" // Pagado vacío
+                ];
+                allRows.push(numberRow);
+            }
+        });
+
+        // Unir encabezados y filas en un solo string CSV con comillas para evitar problemas
+        const csvContent = [
+            headers.join(","), // Encabezados
+            ...allRows.map(row => row.map(cell => `"${cell}"`).join(",")) // Filas con comillas
+        ].join("\n");
+
+        return csvContent;
+    }
+
+    // Función para descargar el archivo CSV
+    function downloadCSV(filename, csvContent) {
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            link.style.visibility = "hidden";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            alert("Tu navegador no soporta la descarga de archivos CSV.");
+        }
+    }
+
+    // Función para exportar las ventas a CSV
+    // Función modificada para exportar tickets con filtro de fecha opcional
+    function exportSalesToCSV(dateFilter = null) {
+        // Cargar todos los tickets
+        const allTickets = loadTickets();
+
+        // Si no hay tickets, mostrar mensaje y salir
+        if (allTickets.length === 0) {
+            alert("No hay ventas para exportar.");
+            return;
+        }
+
+        let ticketsToExport = allTickets;
+        let filename = `ventas_todas_${new Date().toISOString().split("T")[0]}.csv`;
+
+        // Si se proporcionó un filtro de fecha, aplicarlo
+        if (dateFilter) {
+            // Crear objetos Date para el inicio y fin del día seleccionado
+            const selectedDate = new Date(dateFilter + 'T00:00:00');
+            const endDate = new Date(dateFilter + 'T23:59:59');
+
+            // Filtrar tickets por la fecha seleccionada
+            ticketsToExport = allTickets.filter(ticket => {
+                const ticketDate = new Date(ticket.datetime);
+                return ticketDate >= selectedDate && ticketDate <= endDate;
+            });
+
+            // Si no hay tickets para esta fecha, mostrar mensaje y salir
+            if (ticketsToExport.length === 0) {
+                alert("No hay ventas para la fecha seleccionada.");
+                return;
+            }
+
+            // Nombre de archivo con la fecha seleccionada
+            filename = `ventas_${dateFilter}.csv`;
+        }
+
+        // Convertir a CSV y descargar
+        const csvContent = convertTicketsToCSV(ticketsToExport);
+        downloadCSV(filename, csvContent);
+    }
+
+    // Función para exportar las ventas del día seleccionado
+    function exportSelectedDaySales() {
+        const selectedDate = document.getElementById('salesDate').value;
+
+        if (!selectedDate) {
+            alert("Por favor, seleccione una fecha primero.");
+            return;
+        }
+
+        exportSalesToCSV(selectedDate);
+    }
+
+    // Variables globales
+    let numbers = [];
+    let tickets = [];
+
+    function updateDateTime() {
+        const now = new Date();
+        document.getElementById('datetime').textContent = now.toLocaleString();
+    }
+
+const lotteryTimes = {
+    PANAMA: [],
+    NICA: ['12:00 PM', '4:00 PM', '7:00 PM', '10:00 PM'],
+    MONAZO: ['1:55 PM', '5:30 PM', '8:30 PM'],
+    LAPRIMERA: ['11:00 AM', '7:00 PM'],
+    TICA: ['8:30 PM'],
+    NEWYORK: ['1:30 PM', '9:30 PM'],
+    // Reventado usa los mismos horarios que la lotería base
+    REVENTADO_PANAMA: [],
+    REVENTADO_NICA: ['12:00 PM', '4:00 PM', '7:00 PM', '10:00 PM'],
+    REVENTADO_MONAZO: ['1:55 PM', '5:30 PM', '8:30 PM'],
+    REVENTADO_LAPRIMERA: ['11:00 AM', '7:00 PM'],
+    REVENTADO_TICA: ['8:30 PM'],
+    REVENTADO_NEWYORK: ['1:30 PM', '9:30 PM']
+};
+
+// Funciones auxiliares para manejar el Reventado
+function isReventado(lotteryType) {
+    return lotteryType && lotteryType.startsWith('REVENTADO_');
+}
+
+function getBaseLottery(lotteryType) {
+    if (isReventado(lotteryType)) {
+        return lotteryType.replace('REVENTADO_', '');
+    }
+    return lotteryType;
+}
+
+function getDisplayName(lotteryType) {
+    if (isReventado(lotteryType)) {
+        const baseLottery = getBaseLottery(lotteryType);
+        const baseName = baseLottery === 'LAPRIMERA' ? 'LA PRIMERA' : 
+                        baseLottery === 'NEWYORK' ? 'NEW YORK' : baseLottery;
+        return `REVENTADO ${baseName}`;
+    }
+    
+    switch(lotteryType) {
+        case 'LAPRIMERA': return 'LA PRIMERA';
+        case 'NEWYORK': return 'NEW YORK';
+        default: return lotteryType;
+    }
+}
+
+    // Inicializar
+    function initApp() {
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        loadTickets();
+
+        // Inicializar límites y ventas actuales
+        initLimitsAndSales();
+    }
+
+    function updateDrawTimes() {
+    const lotteryType = document.getElementById('lotteryType').value;
+    const timeSelect = document.getElementById('drawTimeSelect');
+    timeSelect.innerHTML = '<option value="">Seleccione hora de sorteo</option>';
+    
+    const baseLottery = getBaseLottery(lotteryType);
+
+    // Modificar esta condición para incluir REVENTADO_PANAMA
+    if (lotteryType && baseLottery !== 'PANAMA' && lotteryType !== 'REVENTADO_PANAMA') {
+        timeSelect.disabled = false;
+        lotteryTimes[lotteryType].forEach(time => {
+            timeSelect.innerHTML += `<option value="${time}">${time}</option>`;
+        });
+    } else {
+        timeSelect.disabled = true;
+    }
+}
+
+    function validateNumber(number) {
+        const numStr = number.toString();
+        return numStr.length === 2 || numStr.length === 4;
+    }
+
+    function calculatePrice(number, pieces, lotteryType, price2Digits = 0.20, price4Digits = 0.25) {
+    const numLength = number.toString().length;
+    const baseLottery = getBaseLottery(lotteryType);
+    
+    // Precios especiales para Reventado
+    if (isReventado(lotteryType)) {
+        if (numLength === 4) {
+            return pieces * 0.30; // Precio especial para billetes reventado
+        } else {
+            return pieces * 0.20; // Precio especial para chances reventado
+        }
+    }
+    
+    // Si es lotería de Panamá (normal)
+    if (baseLottery === 'PANAMA') {
+        if (numLength === 4) {
+            return pieces * 1.00;
+        } else {
+            return pieces * 0.20;
+        }
+    } else {
+        // Para el resto de loterías (normales)
+        if (numLength === 4) {
+            return pieces * price4Digits;
+        } else {
+            return pieces * price2Digits;
+        }
+    }
+}
+
+    function addNumber() {
+        const number = document.getElementById('number').value;
+        const pieces = parseInt(document.getElementById('pieces').value, 10);
+        const lotteryType = document.getElementById('lotteryType').value;
+
+        if (!number || !pieces) {
+            alert('Por favor ingrese número y cantidad de pedazos');
+            return;
+        }
+        if (!validateNumber(number)) {
+            alert('El número debe tener 2 o 4 cifras');
+            return;
+        }
+
+        // Verificar la lotería seleccionada
+        if (!lotteryType) {
+            alert('Por favor seleccione una lotería');
+            return;
+        }
+
+        // Verificar hora de sorteo para loterías que no sean PANAMA
+        if (lotteryType !== 'PANAMA' && lotteryType !== 'REVENTADO_PANAMA') {
+    const drawTime = document.getElementById('drawTimeSelect').value;
+    if (!drawTime) {
+        alert('Por favor seleccione hora de sorteo');
+        return;
+    }
+}
+
+        // Verificar límites antes de agregar el número
+        if (!checkLimits(number, pieces)) {
+            return; // Si no pasa la verificación de límites, no agregar el número
+        }
+
+        // Ahora pasamos el tipo de lotería a calculatePrice
+        const subTotal = calculatePrice(number, pieces, lotteryType);
+
+        // También debes guardar el tipo de lotería en el objeto
+        numbers.push({ number, pieces, subTotal, lotteryType });
+
+        updateNumbersList();
+        updateTotal();
+        // Actualizar el contador de ventas actuales para este número
+        updateCurrentSales(number, pieces, true); // true indica que es una adición
+        document.getElementById('number').value = '';
+        document.getElementById('pieces').value = '';
+    }
+
+    // Actualizar contador de ventas actuales
+    function updateCurrentSales(number, pieces, isAddition) {
+        const lotteryType = document.getElementById('lotteryType').value;
+        const drawTime = document.getElementById('drawTimeSelect').value || 'default';
+        const key = `${lotteryType}_${drawTime}`;
+
+        // Determinar si es un chance (2 cifras) o un billete (4 cifras)
+        const type = number.length === 2 ? 'chances' : 'billetes';
+
+        // Inicializar si no existe
+        if (!currentSales[type][key]) {
+            currentSales[type][key] = {};
+        }
+
+        if (!currentSales[type][key][number]) {
+            currentSales[type][key][number] = 0;
+        }
+
+        // Actualizar el contador (añadir o restar)
+        if (isAddition) {
+            currentSales[type][key][number] += pieces;
+        } else {
+            currentSales[type][key][number] -= pieces;
+            if (currentSales[type][key][number] < 0) {
+                currentSales[type][key][number] = 0; // Evitar valores negativos
+            }
+        }
+    }
+
+    function updateNumbersList() {
+        const tbody = document.getElementById('numbersTableBody');
+        tbody.innerHTML = '';
+
+        numbers.forEach((item, index) => {
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td>${item.number}</td>
+                <td><span id="pieces-${index}">${item.pieces}</span></td>
+                <td><span id="subTotal-${index}">$${item.subTotal.toFixed(2)}</span></td>
+                <td class="ticket-actions">
+                    <button onclick="editPieces(${index})">Edit</button>
+                    <button onclick="removeNumber(${index})">X</button>
+                </td>
+            `;
+        });
+    }
+
+    function editPieces(index) {
+        const oldPieces = numbers[index].pieces;
+        const number = numbers[index].number;
+        const newPieces = prompt("Ingrese la nueva cantidad de tiempos:", oldPieces);
+
+        if (newPieces !== null && !isNaN(newPieces)) {
+            const pieces = parseInt(newPieces, 10);
+
+            if (pieces > 0) {
+                // Calcular la diferencia para verificar límites
+                const difference = pieces - oldPieces;
+
+                if (difference > 0) {
+                    // Solo verificar límites si se está aumentando la cantidad
+                    if (!checkLimits(number, difference)) {
+                        return; // Si no pasa la verificación de límites, no hacer el cambio
+                    }
+                }
+
+                // Actualizar el contador de ventas actuales
+                updateCurrentSales(number, oldPieces, false); // Restar los tiempos viejos
+                updateCurrentSales(number, pieces, true); // Añadir los nuevos tiempos
+
+                // Actualizar los tiempos y el subtotal
+                numbers[index].pieces = pieces;
+                numbers[index].subTotal = calculatePrice(number, pieces);
+
+                // Actualizar la tabla y el total
+                updateNumbersList();
+                updateTotal();
+            } else {
+                alert("La cantidad de tiempos debe ser mayor que 0.");
+            }
+        } else {
+            alert("Por favor, ingrese un número válido.");
+        }
+    }
+
+    function removeNumber(index) {
+        // Obtener el número y la cantidad de pedazos antes de eliminar
+        const number = numbers[index].number;
+        const pieces = numbers[index].pieces;
+
+        // Eliminar de la lista
+        numbers.splice(index, 1);
+        updateNumbersList();
+        updateTotal();
+
+        // Actualizar el contador de ventas actuales para este número
+        updateCurrentSales(number, pieces, false); // false indica que es una eliminación
+    }
+
+    function updateTotal() {
+        const total = numbers.reduce((sum, item) => sum + item.subTotal, 0);
+        document.getElementById('totalValue').textContent = `VALOR DE TICKET: $${total.toFixed(2)}`;
+    }
+
+    function showSalesByDate(dateString) {
+        const selectedDate = new Date(dateString + 'T00:00:00');
+        const endDate = new Date(dateString + 'T23:59:59');
+
+        const tickets = loadTickets();
+        const dayTickets = tickets.filter(ticket => {
+            const ticketDate = new Date(ticket.datetime);
+            return ticketDate >= selectedDate && ticketDate <= endDate;
+        });
+
+        const totalAmount = dayTickets.reduce((sum, ticket) => sum + ticket.total, 0);
+
+        document.getElementById('currentSalesDate').textContent = selectedDate.toLocaleDateString('es-ES');
+        document.getElementById('totalTickets').textContent = dayTickets.length;
+        document.getElementById('totalSales').textContent = totalAmount.toFixed(2);
+
+        displayTickets(dayTickets);
+    }
+
+    function showTodaySales() {
+        const today = new Date();  // Obtiene la fecha y hora actuales
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');  // Los meses van de 0 a 11
+        const day = String(today.getDate()).padStart(2, '0');
+        const dateString = `${year}-${month}-${day}`;  // Formato YYYY-MM-DD
+        document.getElementById('salesDate').value = dateString;
+        showSalesByDate(dateString);
+    }
+    function generateTicket() {
+        // Validar que haya números en el ticket
+        if (numbers.length === 0) {
+            alert('Agregue números al ticket');
+            return;
+        }
+
+        // Obtener datos del formulario
+        const lotteryType = document.getElementById('lotteryType').value;
+        const drawTime = document.getElementById('drawTimeSelect').value;
+        const customerName = document.getElementById('customerName').value;
+
+        // Validaciones
+        if (!lotteryType) {
+            alert('Seleccione una lotería');
+            return;
+        }
+
+       if (lotteryType !== 'PANAMA' && lotteryType !== 'REVENTADO_PANAMA' && !drawTime) {
+        alert('Seleccione hora de sorteo');
+        return;
+    }
+
+        // Agregar logs para depuración
+        console.log("Generando ticket con los siguientes datos:", {
+            lotería: lotteryType,
+            horaSorteo: drawTime,
+            cliente: customerName,
+            números: numbers
+        });
+
+        try {
+            // Crear ID único del ticket
+            const ticketId = Date.now().toString();
+
+            // Calcular el total correctamente (asegurando que subTotal sea un número)
+            const totalAmount = numbers.reduce((sum, item) => {
+                // Verificar que subTotal sea un número válido
+                const subTotal = typeof item.subTotal === 'number' ? item.subTotal : parseFloat(item.subTotal);
+                return sum + (isNaN(subTotal) ? 0 : subTotal);
+            }, 0);
+
+            // Crear objeto del ticket
+            const ticket = {
+                id: ticketId,
+                datetime: new Date().toISOString(),
+                lottery: lotteryType,
+                drawTime: drawTime,
+                numbers: JSON.parse(JSON.stringify(numbers)), // Clonar profundamente para evitar referencias
+                total: totalAmount,
+                paid: false, // Por defecto, el ticket no está pagado
+                customerName: customerName // Guardar el nombre del cliente
+            };
+
+            // Cargar tickets existentes
+            let tickets = loadTickets();
+
+            // Verificar que tickets sea un array
+            if (!Array.isArray(tickets)) {
+                console.error("Error: tickets no es un array válido");
+                tickets = [];
+            }
+
+            // Añadir nuevo ticket
+            tickets.push(ticket);
+
+            // Guardar en localStorage
+            try {
+                localStorage.setItem('lotteryTickets', JSON.stringify(tickets));
+                console.log("Ticket guardado con éxito:", ticket);
+
+                // Recalcular las ventas actuales después de generar el ticket
+                calculateCurrentSales();
+
+            } catch (storageError) {
+                console.error("Error al guardar en localStorage:", storageError);
+                alert("Error al guardar el ticket. Verifique el espacio disponible en su dispositivo.");
+                return;
+            }
+
+            // Mostrar vista previa del ticket
+            showTicketPreview(ticket);
+
+            // Resetear formulario
+            resetForm();
+
+        } catch (error) {
+            console.error("Error al generar el ticket:", error);
+            alert("Ha ocurrido un error al generar el ticket. Por favor, intente nuevamente.");
+        }
+    }
+    function resetForm() {
+        // NO resetear los selectores de lotería y hora de sorteo
+        // document.getElementById("lotteryType").selectedIndex = 0;
+        // document.getElementById("drawTimeSelect").selectedIndex = 0;
+        // document.getElementById("drawTimeSelect").disabled = true;
+
+        // Limpiar el campo de nombre del cliente
+        document.getElementById("customerName").value = "";
+
+        // Limpiar campos de número y pedazos
+        document.getElementById("number").value = "";
+        document.getElementById("pieces").value = "";
+        document.getElementById("quickInput").value = "";
+
+        // Limpiar la lista de números
+        numbers = [];
+        document.getElementById("numbersTableBody").innerHTML = ""; // Limpiar la tabla
+        document.getElementById("totalValue").innerText = "VALOR DE TICKET: 0.00$"; // Resetear el total
+    }
+
+    function showTicketPreview(ticket) {
+        const preview = document.getElementById('ticketPreview');
+        const content = document.getElementById('ticketContent');
+
+        const ticketTime = new Date(ticket.datetime);
+        const hours = ticketTime.getHours() % 12 || 12;
+        const minutes = ticketTime.getMinutes().toString().padStart(2, '0');
+        const ampm = ticketTime.getHours() >= 12 ? 'p. m.' : 'a. m.';
+        const timeString = `${hours}:${minutes}`;
+
+        content.innerHTML = `
+            <div class="ticket-info" style="text-align: center; line-height: 1.4;">
+                <p style="margin: 8px 0;"><strong>Fecha:</strong> ${ticketTime.toLocaleDateString('es-ES')}</p>
+                <p style="margin: 8px 0;"><strong>Hora venta:</strong> ${timeString} ${ampm}</p>
+                <p style="margin: 8px 0;"><strong>Loteria:</strong> ${getDisplayName(ticket.lottery)}</p>
+                ${ticket.drawTime ? `<p style="margin: 8px 0;"><strong>Hora sorteo:</strong> ${ticket.drawTime}</p>` : ''}
+                <p style="margin: 12px 0 6px 0;"><strong>ID Ticket:</strong></p>
+                <p style="margin: 6px 0;">${ticket.id}</p>
+            </div>
+            <div class="ticket-numbers" style="border-top: 1px solid black; border-bottom: 1px solid black; margin: 20px 0; padding: 20px 0;">
+                ${ticket.numbers.map(n => `
+                    <p style="font-family: monospace; font-size: 1.4em; margin: 10px 0; text-align: center;">*${n.number}*/${n.pieces}T/${n.subTotal.toFixed(2)}$</p>
+                `).join('')}
+            </div>
+          <div style="text-align: center;">
+    <p style="font-size: 1.6em; margin: 15px 0;"><strong>Total:</strong> ${ticket.total.toFixed(2)}$</p>
+    ${ticket.customerName ? `<p style="margin: 15px 0; font-size: 1.2em;"><strong>Cliente:</strong> ${ticket.customerName}</p>` : ''}
+    <p style="margin: 15px 0; font-size: 1.2em;">SIN TICKET NO HAY RECLAMO</p>
+    <p style="margin: 8px 0; font-size: 1.2em;">APM13</p>
+</div>
+`;
+
+        const qrDiv = document.getElementById('qrcode');
+        qrDiv.innerHTML = '';
+        new QRCode(qrDiv, {
+            text: ticket.id,
+            width: 150,
+            height: 150,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        preview.style.display = 'block';
+    }
+
+    function closeTicket() {
+        document.getElementById('ticketPreview').style.display = 'none';
+        numbers = [];
+        updateNumbersList();
+        updateTotal();
+    }
+
+    function loadTickets() {
+        const savedTickets = localStorage.getItem('lotteryTickets');
+        return savedTickets ? JSON.parse(savedTickets) : [];
+    }
+
+    function showSalesPage() {
+        // Ocultar todas las páginas excepto la de ventas
+        document.getElementById('mainPage').style.display = 'none';
+        document.getElementById('salesPage').style.display = 'block';
+        document.getElementById('numberSalesPage').style.display = 'none';
+        displayTickets(); // Actualizar la lista de tickets
+        showTodaySales(); // Mostrar las ventas de hoy
+    }
+
+    window.onload = function() {
+        // Reiniciar los valores de los elementos
+        document.getElementById('customerName').value = '';
+        document.getElementById('lotteryType').selectedIndex = 0;
+        document.getElementById('drawTimeSelect').selectedIndex = 0;
+        document.getElementById('drawTimeSelect').disabled = true;
+        document.getElementById('number').value = '';
+        document.getElementById('pieces').value = '';
+    };
+
+    function displayTickets(ticketsToShow = null) {
+        const ticketsList = document.getElementById('ticketsList');
+        const tickets = ticketsToShow || loadTickets();
+
+        ticketsList.innerHTML = tickets.map(ticket => `
+            <div class="ticket-item">
+                <p><strong>ID:</strong> ${ticket.id}</p>
+                <p><strong>Fecha:</strong> ${new Date(ticket.datetime).toLocaleString()}</p>
+                <p><strong>Lotería:</strong> ${ticket.lottery}</p>
+                ${ticket.customerName ? `<p><strong>Cliente:</strong> ${ticket.customerName}</p>` : ''}
+                <p><strong>Total:</strong> ${ticket.total.toFixed(2)}</p>
+                <p><strong>Estado:</strong> ${ticket.paid ? 'Pagado' : 'Pendiente'}</p>
+                <div class="ticket-actions">
+                    <button onclick="viewTicket('${ticket.id}')">Ver</button>
+                    <button onclick="deleteTicket('${ticket.id}')">clear</button>
+                    <button onclick="copyTicket('${ticket.id}')">copy</button>
+                    ${!ticket.paid ? `<button onclick="marcarComoPagado('${ticket.id}')">cobrar</button>` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function viewTicket(ticketId) {
+        const tickets = loadTickets();
+        const ticket = tickets.find(t => t.id === ticketId);
+        if (ticket) {
+            showTicketPreview(ticket);
+            showMainPage();
+        }
+    }
+
+    function copyTicket(ticketId) {
+        const tickets = loadTickets();
+        const ticket = tickets.find(t => t.id === ticketId);
+
+        if (ticket) {
+            // Cargar los números del ticket en la variable global `numbers`
+            numbers = ticket.numbers.map(num => ({
+                number: num.number,
+                pieces: num.pieces,
+                subTotal: num.subTotal
+            }));
+
+            // Actualizar la lista de números en la interfaz
+            updateNumbersList();
+            updateTotal();
+
+            // Cambiar a la página principal
+            showMainPage();
+
+            // Mostrar un mensaje al usuario
+            alert("Los números del ticket han sido copiados. Cambia la lotería y la hora de sorteo antes de generar el nuevo ticket.");
+        } else {
+            alert("Ticket no encontrado.");
+        }
+    }
+
+    function deleteTicket(ticketId) {
+        if (confirm('¿Está seguro de eliminar este ticket?')) {
+            let tickets = loadTickets();
+            const ticketToDelete = tickets.find(t => t.id === ticketId);
+
+            if (ticketToDelete) {
+                // Eliminar el ticket
+                tickets = tickets.filter(t => t.id !== ticketId);
+                localStorage.setItem('lotteryTickets', JSON.stringify(tickets));
+                displayTickets();
+
+                // Recalcular las ventas actuales después de eliminar el ticket
+                calculateCurrentSales();
+
+                const currentDate = document.getElementById('salesDate').value;
+                if (currentDate) {
+                    showSalesByDate(currentDate);
+                }
+            } else {
+                alert('Ticket no encontrado.');
+            }
+        }
+    }
+
+    function searchTickets() {
+        const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        const tickets = loadTickets();
+        const filteredTickets = tickets.filter(ticket =>
+            ticket.id.toLowerCase().includes(searchValue)
+        );
+        displayTickets(filteredTickets);
+    }
+
+    async function compartirTicket() {
+        try {
+            const ticketElement = document.getElementById('ticketPreview');
+            const actionButtons = ticketElement.querySelector('.ticket-actions');
+
+            actionButtons.style.display = 'none';
+
+            const canvas = await html2canvas(ticketElement, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false
+            });
+
+            actionButtons.style.display = 'flex';
+
+            const base64 = canvas.toDataURL('image/png');
+            Android.shareTicketFromAndroid(base64);
+        } catch (error) {
+            console.error('Error al compartir:', error);
+            alert('No se pudo compartir el ticket. Intente de nuevo.');
+        }
+    }
+
+    let html5QrcodeScanner = null;
+
+    function toggleScanner() {
+        const scannerContainer = document.getElementById('scannerContainer');
+        if (scannerContainer.style.display === 'none' || !scannerContainer.style.display) {
+            scannerContainer.style.display = 'block';
+            iniciarEscaner();
+        } else {
+            scannerContainer.style.display = 'none';
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear();
+            }
+        }
+    }
+
+    function verificarTicket(ticket) {
+        if (ticket.paid) {
+            alert('Este ticket ya ha sido pagado.');
+        } else {
+            if (confirm(`¿Marcar el ticket ${ticket.id} como pagado?`)) {
+                marcarComoPagado(ticket.id);
+            }
+        }
+    }
+
+    function marcarComoPagado(ticketId) {
+        let tickets = loadTickets();
+        const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+        if (ticketIndex !== -1) {
+            tickets[ticketIndex].paid = true; // Marcamos como pagado
+            localStorage.setItem('lotteryTickets', JSON.stringify(tickets));
+            alert('Ticket marcado como pagado.');
+            displayTickets(); // Actualizamos la lista de tickets
+
+            // Como el ticket está pagado, ya no debería contar para los límites de venta
+            // así que recalculamos las ventas actuales
+            calculateCurrentSales();
+        } else {
+            alert('Ticket no encontrado.');
+        }
+    }
+
+    function showNumberSalesPage() {
+        document.getElementById('mainPage').style.display = 'none';
+        document.getElementById('salesPage').style.display = 'none';
+        document.getElementById('numberSalesPage').style.display = 'block';
+        document.getElementById('verifyWinnersPage').style.display = 'none';
+
+        // Establecer la fecha actual como valor por defecto si no hay fecha seleccionada
+        if (!document.getElementById('salesFilterDate').value) {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            document.getElementById('salesFilterDate').value = `${year}-${month}-${day}`;
+        }
+
+        updateNumberSalesTable(); // Actualizar la cuadrícula al mostrar la página
+    }
+
+    // Función para actualizar los tiempos de sorteo en los filtros
+    function updateFilterDrawTimes() {
+    const lotteryType = document.getElementById('filterLotteryType').value;
+    const timeSelect = document.getElementById('filterDrawTimeSelect');
+    timeSelect.innerHTML = '<option value="">Todas las Horas</option>';
+    
+    const baseLottery = getBaseLottery(lotteryType);
+
+    if (lotteryType && baseLottery !== 'PANAMA') {
+        timeSelect.disabled = false;
+        lotteryTimes[lotteryType].forEach(time => {
+            timeSelect.innerHTML += `<option value="${time}">${time}</option>`;
+        });
+    } else {
+        timeSelect.disabled = true;
+    }
+}
+
+    // Función para aplicar los filtros en la página de tiempos vendidos
+    function applyFilters() {
+        if (activeTab === 'tiempos') {
+            updateNumberSalesTable(); // Actualizar tabla de tiempos vendidos
+        } else {
+            updateBilletesSalesTable(); // Actualizar tabla de billetes vendidos
+        }
+    }
+
+
+
+    // Actualizar la función de tiempos vendidos para mantener coherencia
+    function updateNumberSalesTable() {
+        const tickets = loadTickets();
+        const filterLottery = document.getElementById('filterLotteryType').value;
+        const filterTime = document.getElementById('filterDrawTimeSelect').value;
+        const filterDate = document.getElementById('salesFilterDate').value;
+
+        // Inicializar un objeto para contar los tiempos vendidos por número
+        const numberSales = {};
+        for (let i = 0; i <= 99; i++) {
+            const number = i.toString().padStart(2, '0'); // Formato 00, 01, ..., 99
+            numberSales[number] = 0; // Inicializar en 0 (número)
+        }
+
+        // Crear objetos Date para el rango del día seleccionado si hay un filtro de fecha
+        let selectedDateStart = null;
+        let selectedDateEnd = null;
+
+        if (filterDate) {
+            selectedDateStart = new Date(filterDate + 'T00:00:00');
+            selectedDateEnd = new Date(filterDate + 'T23:59:59');
+        }
+
+        // Filtrar y contar los tiempos vendidos
+        tickets.forEach(ticket => {
+            // Convertir la fecha del ticket a un objeto Date para comparación
+            const ticketDate = new Date(ticket.datetime);
+
+            // Verificar si pasa los filtros
+            let passesFilters = true;
+
+            // Filtro de lotería
+            if (filterLottery && ticket.lottery !== filterLottery) {
+                passesFilters = false;
+            }
+
+            // Filtro de hora de sorteo
+            if (filterTime && ticket.drawTime !== filterTime) {
+                passesFilters = false;
+            }
+
+            // Filtro de fecha - comparar objetos Date para incluir horas
+            if (filterDate && (ticketDate < selectedDateStart || ticketDate > selectedDateEnd)) {
+                passesFilters = false;
+            }
+
+            // Si pasa todos los filtros, contar los tiempos vendidos
+            if (passesFilters) {
+                ticket.numbers.forEach(num => {
+                    if (num.number.length === 2) { // Solo contar números de 2 cifras
+                        numberSales[num.number] += parseInt(num.pieces, 10);
+                    }
+                });
+            }
+        });
+
+        // Mostrar los resultados en la cuadrícula
+        const grid = document.getElementById('numberSalesGrid');
+        grid.innerHTML = '';
+
+        // Recorrer los números en orden numérico (00, 01, 02, ..., 99)
+        for (let i = 0; i <= 99; i++) {
+            const number = i.toString().padStart(2, '0'); // Formato 00, 01, ..., 99
+            const numberItem = document.createElement('div');
+            numberItem.className = 'number-item';
+
+            // Aplicar la clase "highlight" si el número tiene tiempos vendidos mayores a cero
+            if (numberSales[number] > 0) {
+                numberItem.classList.add('highlight');
+            }
+
+            numberItem.innerHTML = `
+                <span>${number}</span>
+                <span>${numberSales[number]}</span>
+            `;
+            grid.appendChild(numberItem);
+            displaySalesSummary('tiempos');
+        }
+    }
+
+    function deleteSalesByDate() {
+        const selectedDate = document.getElementById('salesDate').value;
+
+        if (!selectedDate) {
+            alert("Por favor, seleccione una fecha primero.");
+            return;
+        }
+
+        if (confirm(`¿Está seguro de borrar todas las ventas del ${selectedDate}? Esta acción no se puede deshacer.`)) {
+            let tickets = loadTickets();
+
+            // Filtrar los tickets que NO coincidan con la fecha seleccionada
+            const filteredTickets = tickets.filter(ticket => {
+                const ticketDate = new Date(ticket.datetime).toISOString().split('T')[0];
+                return ticketDate !== selectedDate;
+            });
+
+            // Guardar los tickets filtrados en localStorage
+            localStorage.setItem('lotteryTickets', JSON.stringify(filteredTickets));
+
+            // Actualizar la lista de tickets
+            displayTickets();
+            showSalesByDate(selectedDate); // Actualizar el resumen de ventas
+
+            alert(`Todas las ventas del ${selectedDate} han sido borradas.`);
+        }
+    }
+
+    function processQuickInput() {
+        const input = document.getElementById('quickInput').value.trim();
+
+        if (!input) {
+            alert('Por favor ingrese al menos un número en formato "número,tiempos"');
+            return;
+        }
+
+        // Verificar la lotería seleccionada
+        const lotteryType = document.getElementById('lotteryType').value;
+        if (!lotteryType) {
+            alert('Por favor seleccione una lotería');
+            return;
+        }
+
+        // Verificar hora de sorteo para loterías que no sean PANAMA
+        if (lotteryType !== 'PANAMA') {
+            const drawTime = document.getElementById('drawTimeSelect').value;
+            if (!drawTime) {
+                alert('Por favor seleccione hora de sorteo');
+                return;
+            }
+        }
+
+        // Buscar todos los patrones que coincidan con "número,tiempos"
+        const matches = input.match(/\d+,\d+/g);
+
+        if (!matches || matches.length === 0) {
+            alert('No se encontraron números en formato válido (número,tiempos)');
+            return;
+        }
+
+        let processed = 0;
+
+        for (let i = 0; i < matches.length; i++) {
+            const match = matches[i];
+            // Separar el número y los tiempos
+            const [number, piecesStr] = match.split(',');
+
+            // Validar el número (debe tener 2 o 4 cifras)
+            if (validateNumber(number)) {
+                // Convertir tiempos a número
+                const pieces = parseInt(piecesStr, 10);
+
+                // Solo procesar si los tiempos son un número positivo
+                if (!isNaN(pieces) && pieces > 0) {
+                    // Verificar límites antes de agregar el número
+                    if (!checkLimits(number, pieces)) {
+                        continue; // Si no pasa la verificación de límites, pasar al siguiente número
+                    }
+
+                    // Calcular el subtotal
+                    const subTotal = calculatePrice(number, pieces);
+
+                    // Agregar a la lista de números
+                    numbers.push({ number, pieces, subTotal });
+    // Actualizar el contador de ventas actuales para este número
+                    updateCurrentSales(number, pieces, true); // true indica que es una adición
+
+                    processed++;
+                }
+            }
+        }
+
+        // Actualizar la tabla y el total si se procesó al menos un número
+        if (processed > 0) {
+            updateNumbersList();
+            updateTotal();
+            document.getElementById('quickInput').value = ''; // Limpiar el campo
+            alert(`Se procesaron ${processed} números correctamente.`);
+        } else if (matches.length > 0 && processed === 0) {
+            alert('No se pudieron procesar los números debido a los límites establecidos o formato incorrecto.');
+        } else {
+            alert('No se pudieron procesar los números. Asegúrese de que los números tengan 2 o 4 cifras y los tiempos sean valores positivos.');
+        }
+    }
+
+    function shareReport(type) {
+        const tickets = loadTickets();
+        const filterLottery = document.getElementById('filterLotteryType').value;
+        const filterTime = document.getElementById('filterDrawTimeSelect').value;
+        const filterDate = document.getElementById('salesFilterDate').value;
+
+        // Inicializar objetos para contar ventas
+        const sales = {};
+
+        // Crear objetos Date para el rango del día seleccionado si hay un filtro de fecha
+        let selectedDateStart = null;
+        let selectedDateEnd = null;
+
+        if (filterDate) {
+            selectedDateStart = new Date(filterDate + 'T00:00:00');
+            selectedDateEnd = new Date(filterDate + 'T23:59:59');
+        }
+
+        // Filtrar y contar ventas
+        tickets.forEach(ticket => {
+            // Convertir la fecha del ticket a un objeto Date para comparación
+            const ticketDate = new Date(ticket.datetime);
+
+            // Verificar si pasa los filtros
+            let passesFilters = true;
+
+            // Filtro de lotería
+            if (filterLottery && ticket.lottery !== filterLottery) {
+                passesFilters = false;
+            }
+
+            // Filtro de hora de sorteo
+            if (filterTime && ticket.drawTime !== filterTime) {
+                passesFilters = false;
+            }
+
+            // Filtro de fecha - comparar objetos Date para incluir horas
+            if (filterDate && (ticketDate < selectedDateStart || ticketDate > selectedDateEnd)) {
+                passesFilters = false;
+            }
+
+            // Si pasa todos los filtros, contar ventas
+            if (passesFilters) {
+                ticket.numbers.forEach(num => {
+                    // Para tiempos (2 cifras) o billetes (4 cifras) según el tipo
+                    if ((type === 'tiempos' && num.number.length === 2) ||
+                        (type === 'billetes' && num.number.length === 4)) {
+                        if (!sales[num.number]) {
+                            sales[num.number] = 0;
+                        }
+                        sales[num.number] += parseInt(num.pieces, 10);
+                    }
+                });
+            }
+        });
+
+        // Crear el contenido del reporte
+        let reportContent = `Reporte de ${type === 'tiempos' ? 'Tiempos' : 'Billetes'} Vendidos\n`;
+        reportContent += `Lotería: ${filterLottery || 'Todas'}\n`;
+        reportContent += `Hora de Sorteo: ${filterTime || 'Todas'}\n`;
+        reportContent += `Fecha: ${filterDate || 'Todas'}\n\n`;
+        reportContent += type === 'tiempos' ? "Número,Tiempos Vendidos\n" : "Billete,Cantidad Vendida\n";
+
+        // Agregar números/billetes con cantidades vendidas mayores a cero
+        const sortedNumbers = Object.keys(sales).sort();
+        sortedNumbers.forEach(number => {
+            if (sales[number] > 0) {
+                reportContent += `${number},${sales[number]}\n`;
+            }
+        });
+
+        // Agregar console.log para depuración
+        console.log(`Reporte de ${type} generado:`, reportContent);
+
+        Android.shareReportFromAndroid(reportContent, type);
+    }
+
+
+    // Función para verificar tickets ganadores
+    function checkWinningTickets() {
+        console.log("Iniciando verificación de tickets ganadores");
+
+        const firstPrize = document.getElementById('firstPrize').value.trim();
+        const secondPrize = document.getElementById('secondPrize').value.trim();
+        const thirdPrize = document.getElementById('thirdPrize').value.trim();
+
+        if (!firstPrize || !secondPrize || !thirdPrize) {
+            alert("Por favor, ingrese los números ganadores.");
+            return;
+        }
+
+        // Obtener los valores de los filtros - USAR IDs CORRECTOS
+        const filterDateInput = document.getElementById('winnersFilterDate').value;
+        const filterLottery = document.getElementById('filterLottery').value;
+        const filterDrawTime = document.getElementById('filterDrawTime').value;
+
+        console.log("Filtros seleccionados:", {
+            fecha: filterDateInput,
+            loteria: filterLottery,
+            horaSorteo: filterDrawTime
+        });
+
+        // Si no hay ningún filtro seleccionado, mostrar una advertencia
+        if (!filterDateInput && !filterLottery && !filterDrawTime) {
+            if (!confirm("No ha seleccionado ningún filtro. ¿Desea verificar TODOS los tickets existentes?")) {
+                return;
+            }
+        }
+
+        const tickets = loadTickets();
+        console.log("Total de tickets cargados:", tickets.length);
+
+        let filteredTickets = [...tickets]; // Crear una copia para no modificar el original
+
+        // Aplicar filtro de fecha - CORRECCIÓN IMPLEMENTADA AQUÍ
+        if (filterDateInput) {
+            console.log("Filtrando por fecha:", filterDateInput);
+
+            filteredTickets = filteredTickets.filter(ticket => {
+                // Convertir la fecha del ticket a formato local para evitar problemas de zona horaria
+                const ticketDate = new Date(ticket.datetime);
+
+                // Extraer componentes de fecha en la zona horaria local
+                const ticketYear = ticketDate.getFullYear();
+                const ticketMonth = String(ticketDate.getMonth() + 1).padStart(2, '0');
+                const ticketDay = String(ticketDate.getDate()).padStart(2, '0');
+                const ticketDateStr = `${ticketYear}-${ticketMonth}-${ticketDay}`;
+
+                // Comparar con la fecha del filtro
+                const coincide = ticketDateStr === filterDateInput;
+
+                if (coincide) {
+                    console.log("Ticket coincide con fecha:", ticket.id, ticketDateStr);
+                }
+
+                return coincide;
+            });
+        }
+
+        console.log("Tickets después de filtrar por fecha:", filteredTickets.length);
+
+        // Aplicar filtro de lotería
+        if (filterLottery) {
+            console.log("Filtrando por lotería:", filterLottery);
+            filteredTickets = filteredTickets.filter(ticket => ticket.lottery === filterLottery);
+        }
+
+        console.log("Tickets después de filtrar por lotería:", filteredTickets.length);
+
+        // Aplicar filtro de hora de sorteo
+        if (filterDrawTime) {
+            console.log("Filtrando por hora de sorteo:", filterDrawTime);
+            filteredTickets = filteredTickets.filter(ticket => ticket.drawTime === filterDrawTime);
+        }
+
+        console.log("Tickets después de filtrar por hora de sorteo:", filteredTickets.length);
+
+        // Mostrar mensaje si no hay tickets que coincidan con los filtros
+        if (filteredTickets.length === 0) {
+            alert("No hay tickets que coincidan con los filtros seleccionados.");
+            return;
+        }
+
+        // Buscar tickets ganadores entre los tickets filtrados
+        const winningTickets = [];
+
+        filteredTickets.forEach(ticket => {
+            ticket.numbers.forEach(num => {
+                const ticketNumber = num.number;
+                let isPrize = false;
+                let prizeType = '';
+
+                if (ticketNumber === firstPrize) {
+                    isPrize = true;
+                    prizeType = '1er Premio';
+                } else if (ticketNumber === secondPrize) {
+                    isPrize = true;
+                    prizeType = '2do Premio';
+                } else if (ticketNumber === thirdPrize) {
+                    isPrize = true;
+                    prizeType = '3er Premio';
+                }
+
+                if (isPrize) {
+                    // Formatear la fecha en un formato legible
+                    const ticketDate = new Date(ticket.datetime);
+                    const formattedDate = `${ticketDate.getDate()}/${ticketDate.getMonth() + 1}/${ticketDate.getFullYear()}`;
+
+                    winningTickets.push({
+                        id: ticket.id,
+                        lottery: ticket.lottery,
+                        drawTime: ticket.drawTime,
+                        date: formattedDate,
+                        number: ticketNumber,
+                        pieces: num.pieces,
+                        prize: prizeType
+                    });
+
+                    console.log("Ticket ganador encontrado:", {
+                        id: ticket.id,
+                        fecha: formattedDate,
+                        loteria: ticket.lottery,
+                        horaSorteo: ticket.drawTime,
+                        numero: ticketNumber,
+                        premio: prizeType
+                    });
+                }
+            });
+        });
+
+        if (winningTickets.length > 0) {
+            console.log("Total tickets ganadores encontrados:", winningTickets.length);
+            displayWinningTickets(winningTickets);
+        } else {
+            alert("No hay tickets ganadores con los números ingresados en los filtros seleccionados.");
+        }
+    }
+
+
+    // Función para mostrar los tickets ganadores
+    function displayWinningTickets(winningTickets) {
+        const resultDiv = document.getElementById('winningTicketsResult');
+        resultDiv.innerHTML = `
+            <h3>Tickets Ganadores</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="border: 1px solid #ccc; padding: 8px;">ID Ticket</th>
+                        <th style="border: 1px solid #ccc; padding: 8px;">Fecha</th>
+                        <th style="border: 1px solid #ccc; padding: 8px;">Lotería</th>
+                        <th style="border: 1px solid #ccc; padding: 8px;">Hora Sorteo</th>
+                        <th style="border: 1px solid #ccc; padding: 8px;">Número</th>
+                        <th style="border: 1px solid #ccc; padding: 8px;">Tiempos</th>
+                        <th style="border: 1px solid #ccc; padding: 8px;">Premio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${winningTickets.map(ticket => `
+                        <tr>
+                            <td style="border: 1px solid #ccc; padding: 8px;">${ticket.id}</td>
+                            <td style="border: 1px solid #ccc; padding: 8px;">${ticket.date}</td>
+                            <td style="border: 1px solid #ccc; padding: 8px;">${ticket.lottery}</td>
+                            <td style="border: 1px solid #ccc; padding: 8px;">${ticket.drawTime || 'N/A'}</td>
+                            <td style="border: 1px solid #ccc; padding: 8px;">${ticket.number}</td>
+                            <td style="border: 1px solid #ccc; padding: 8px;">${ticket.pieces}</td>
+                            <td style="border: 1px solid #ccc; padding: 8px;">${ticket.prize}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+
+    function applyWinnerFilters() {
+        const filterDate = document.getElementById('winnersFilterDate').value; // Usar el ID correcto
+        const filterLottery = document.getElementById('filterLottery').value;
+        const filterDrawTime = document.getElementById('filterDrawTime').value;
+
+
+        const tickets = loadTickets();
+        const filteredTickets = tickets.filter(ticket => {
+            const ticketDate = new Date(ticket.datetime).toISOString().split('T')[0];
+            return (!filterDate || ticketDate === filterDate) &&
+                   (!filterLottery || ticket.lottery === filterLottery) &&
+                   (!filterDrawTime || ticket.drawTime === filterDrawTime);
+        });
+
+        if (filteredTickets.length > 0) {
+            displayFilteredTickets(filteredTickets);
+        } else {
+            alert("No hay tickets que coincidan con los filtros seleccionados.");
+        }
+    }
+
+    function displayFilteredTickets(filteredTickets) {
+        const resultDiv = document.createElement('div');
+        resultDiv.innerHTML = `
+            <h3>Tickets Filtrados</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="border: 1px solid #ccc; padding: 8px;">ID Ticket</th>
+                        <th style="border: 1px solid #ccc; padding: 8px;">Fecha</th>
+                        <th style="border: 1px solid #ccc; padding: 8px;">Lotería</th>
+                        <th style="border: 1px solid #ccc; padding: 8px;">Hora de Sorteo</th>
+                        <th style="border: 1px solid #ccc; padding: 8px;">Números</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${filteredTickets.map(ticket => `
+                        <tr>
+                            <td style="border: 1px solid #ccc; padding: 8px;">${ticket.id}</td>
+                            <td style="border: 1px solid #ccc; padding: 8px;">${new Date(ticket.datetime).toLocaleDateString()}</td>
+                            <td style="border: 1px solid #ccc; padding: 8px;">${ticket.lottery}</td>
+                            <td style="border: 1px solid #ccc; padding: 8px;">${ticket.drawTime || 'N/A'}</td>
+                            <td style="border: 1px solid #ccc; padding: 8px;">
+                                ${ticket.numbers.map(num => `${num.number} (${num.pieces}T)`).join(', ')}
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+
+        // Mostrar el resultado en la página
+        const mainPage = document.getElementById('mainPage');
+        mainPage.appendChild(resultDiv);
+    }
+
+    // Función para mostrar la página de verificación de ganadores
+    function showVerifyWinnersPage() {
+        document.getElementById('mainPage').style.display = 'none';
+        document.getElementById('salesPage').style.display = 'none';
+        document.getElementById('numberSalesPage').style.display = 'none';
+        document.getElementById('verifyWinnersPage').style.display = 'block';
+        document.getElementById('winningTicketsResult').innerHTML = ''; // Limpiar resultados anteriores
+
+        // Agregar evento de cambio al selector de lotería
+        document.getElementById('filterLottery').onchange = updateWinnerDrawTimes;
+
+        // Inicializar las horas de sorteo
+        updateWinnerDrawTimes();
+
+        // Resetear los campos de premios
+        document.getElementById('firstPrize').value = '';
+        document.getElementById('secondPrize').value = '';
+        document.getElementById('thirdPrize').value = '';
+
+        // Establecer la fecha actual como valor predeterminado
+        if (!document.getElementById('winnersFilterDate').value) {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            document.getElementById('winnersFilterDate').value = `${year}-${month}-${day}`;
+        }
+    }
+
+    // Función para volver a la página principal
+    function showMainPage() {
+        // Ocultar todas las páginas excepto la principal
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('salesPage').style.display = 'none';
+        document.getElementById('numberSalesPage').style.display = 'none';
+        document.getElementById('verifyWinnersPage').style.display = 'none';
+        document.getElementById('configPage').style.display = 'none';
+
+        // Mostrar la página principal
+        document.getElementById('mainPage').style.display = 'block';
+
+        // Solo limpiamos los campos de entrada de números, pero mantenemos la lotería y hora
+        document.getElementById('number').value = '';
+        document.getElementById('pieces').value = '';
+        document.getElementById('quickInput').value = '';
+    }
+
+    function resetMainPage() {
+        // Limpiar solo los campos específicos, pero NO reiniciar lotería ni hora
+        document.getElementById('customerName').value = '';
+        document.getElementById('number').value = '';
+        document.getElementById('pieces').value = '';
+        document.getElementById('quickInput').value = '';
+
+        // No reiniciar la lista de números si ya hay números copiados
+        if (numbers.length === 0) {
+            document.getElementById('numbersTableBody').innerHTML = ''; // Limpiar la tabla de números
+            document.getElementById('totalValue').innerText = 'VALOR DE TICKET: 0.00$'; // Reiniciar el total
+        }
+
+        // NO incluir estas líneas que reinician los selectores:
+        // document.getElementById('lotteryType').selectedIndex = 0;
+        // document.getElementById('drawTimeSelect').selectedIndex = 0;
+        // document.getElementById('drawTimeSelect').disabled = true;
+    }
+
+    function updateWinnerDrawTimes() {
+        const lotteryType = document.getElementById('filterLottery').value;
+        const timeSelect = document.getElementById('filterDrawTime');
+
+        // Reiniciar las opciones
+        timeSelect.innerHTML = '<option value="">Todas las Horas</option>';
+
+        if (lotteryType && lotteryType !== 'PANAMA') {
+            timeSelect.disabled = false;
+            // Agregar las horas específicas para la lotería seleccionada
+            if (lotteryTimes[lotteryType]) {
+                lotteryTimes[lotteryType].forEach(time => {
+                    timeSelect.innerHTML += `<option value="${time}">${time}</option>`;
+                });
+            }
+        } else {
+            timeSelect.disabled = true;
+        }
+    }
+
+    let activeTab = 'tiempos';
+
+    // Función para cambiar entre las pestañas de tiempos y billetes
+    function switchTab(tabName) {
+        activeTab = tabName;
+
+        // Actualizar estilos de las pestañas
+        document.getElementById('tiemposTab').classList.toggle('active', tabName === 'tiempos');
+        document.getElementById('billetesTab').classList.toggle('active', tabName === 'billetes');
+
+        // Mostrar/ocultar los contenedores correspondientes
+        document.getElementById('tiemposContainer').style.display = tabName === 'tiempos' ? 'block' : 'none';
+        document.getElementById('billetesContainer').style.display = tabName === 'billetes' ? 'block' : 'none';
+
+        // Actualizar la visualización
+        applyFilters();
+    }
+
+    function updateBilletesSalesTable() {
+        const tickets = loadTickets();
+        const filterLottery = document.getElementById('filterLotteryType').value;
+        const filterTime = document.getElementById('filterDrawTimeSelect').value;
+        const filterDate = document.getElementById('salesFilterDate').value;
+
+        // Inicializar un objeto para contar los tiempos vendidos por billete
+        const billetesSales = {};
+
+        // Crear objetos Date para el rango del día seleccionado si hay un filtro de fecha
+        let selectedDateStart = null;
+        let selectedDateEnd = null;
+
+        if (filterDate) {
+            selectedDateStart = new Date(filterDate + 'T00:00:00');
+            selectedDateEnd = new Date(filterDate + 'T23:59:59');
+        }
+
+        // Filtrar y contar los billetes vendidos
+        tickets.forEach(ticket => {
+            // Convertir la fecha del ticket a un objeto Date para comparación
+            const ticketDate = new Date(ticket.datetime);
+
+            // Verificar si pasa los filtros
+            let passesFilters = true;
+
+            // Filtro de lotería
+            if (filterLottery && ticket.lottery !== filterLottery) {
+                passesFilters = false;
+            }
+
+            // Filtro de hora de sorteo
+            if (filterTime && ticket.drawTime !== filterTime) {
+                passesFilters = false;
+            }
+
+            // Filtro de fecha - comparar objetos Date para incluir horas
+            if (filterDate && (ticketDate < selectedDateStart || ticketDate > selectedDateEnd)) {
+                passesFilters = false;
+            }
+
+            // Si pasa todos los filtros, contar los billetes vendidos
+            if (passesFilters) {
+                ticket.numbers.forEach(num => {
+                    if (num.number.length === 4) { // Solo contar números de 4 cifras (billetes)
+                        if (!billetesSales[num.number]) {
+                            billetesSales[num.number] = 0;
+                        }
+                        billetesSales[num.number] += parseInt(num.pieces, 10);
+                    }
+                });
+            }
+        });
+
+        // Mostrar los resultados en la cuadrícula
+        const grid = document.getElementById('billetesSalesGrid');
+        grid.innerHTML = '';
+
+        // Ordenar los billetes por número para mostrarlos organizados
+        const sortedBilletes = Object.keys(billetesSales).sort();
+
+       // Verificar si no hay billetes para mostrar
+if (sortedBilletes.length === 0) {
+    grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 20px;">No hay billetes vendidos con los filtros seleccionados</div>';
+    displaySalesSummary('billetes'); // ← AGREGAR ESTA LÍNEA
+    return;
+}
+
+        // Recorrer los billetes y mostrarlos en la cuadrícula
+        sortedBilletes.forEach(billete => {
+            if (billetesSales[billete] > 0) {
+                const billeteItem = document.createElement('div');
+                billeteItem.className = 'billete-item highlight';
+                billeteItem.innerHTML = `
+                    <span>${billete}</span>
+                    <span>${billetesSales[billete]}</span>
+                `;
+                grid.appendChild(billeteItem);
+                displaySalesSummary('billetes');
+            }
+        });
+    }
+
+
+    function iniciarEscaner() {
+        html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader",
+            {
+                fps: 10,
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0
+            },
+            /* verbose= */ false
+        );
+
+        html5QrcodeScanner.render((decodedText) => {
+            const tickets = loadTickets();
+            const ticket = tickets.find(t => t.id === decodedText);
+            if (ticket) {
+                html5QrcodeScanner.clear();
+                document.getElementById('scannerContainer').style.display = 'none';
+                verificarTicket(ticket);
+            } else {
+                alert('Ticket no encontrado');
+            }
+        });
+    }
+
+    // Variables para almacenar los límites
+    let salesLimits = {
+        chances: {}, // Límites para números de 2 cifras
+        billetes: {} // Límites para números de 4 cifras
+    };
+
+    // Almacenar ventas actuales
+    let currentSales = {
+        chances: {}, // Ventas actuales para números de 2 cifras por lotería y sorteo
+        billetes: {} // Ventas actuales para números de 4 cifras por lotería y sorteo
+    };
+
+    // Inicializar límites y ventas actuales desde localStorage
+    function initLimitsAndSales() {
+        const savedLimits = localStorage.getItem('lotteryLimits');
+        if (savedLimits) {
+            salesLimits = JSON.parse(savedLimits);
+        }
+
+        // Inicializar las ventas actuales basadas en los tickets guardados
+        calculateCurrentSales();
+
+        // Mostrar límites actuales si estamos en la página de configuración
+        if (document.getElementById('configPage').style.display !== 'none') {
+            displayCurrentLimits('chances');
+            displayCurrentLimits('billetes');
+        }
+    }
+
+    // Calcular ventas actuales basadas en los tickets guardados
+    function calculateCurrentSales() {
+        currentSales = {
+            chances: {},
+            billetes: {}
+        };
+
+        const tickets = loadTickets();
+        console.log("Total de tickets cargados:", tickets.length);
+
+        // Obtener la fecha actual en formato local YYYY-MM-DD
+        const today = new Date();
+        const todayYear = today.getFullYear();
+        const todayMonth = String(today.getMonth() + 1).padStart(2, '0');
+        const todayDay = String(today.getDate()).padStart(2, '0');
+        const todayString = `${todayYear}-${todayMonth}-${todayDay}`;
+
+        console.log("Fecha actual:", todayString);
+
+        // Solo contar tickets no pagados (que aún están activos) Y que sean del día de hoy
+        const activeTickets = tickets.filter(ticket => {
+            const ticketDate = new Date(ticket.datetime);
+            const ticketYear = ticketDate.getFullYear();
+            const ticketMonth = String(ticketDate.getMonth() + 1).padStart(2, '0');
+            const ticketDay = String(ticketDate.getDate()).padStart(2, '0');
+            const ticketDateString = `${ticketYear}-${ticketMonth}-${ticketDay}`;
+
+            const isToday = ticketDateString === todayString;
+            const isNotPaid = !ticket.paid;
+
+            console.log(`Ticket ${ticket.id}: fecha=${ticketDateString}, es hoy=${isToday}, no pagado=${isNotPaid}`);
+
+            return isNotPaid && isToday;
+        });
+
+        console.log(`Tickets activos para hoy (${todayString}):`, activeTickets.length);
+        console.log("Tickets que se contarán para límites:", activeTickets);
+
+        activeTickets.forEach(ticket => {
+            const lottery = ticket.lottery;
+            const drawTime = ticket.drawTime || 'default';
+            const key = `${lottery}_${drawTime}`;
+
+            ticket.numbers.forEach(num => {
+                const number = num.number;
+                const pieces = parseInt(num.pieces, 10);
+
+                if (number.length === 2) { // Chances (2 cifras)
+                    if (!currentSales.chances[key]) {
+                        currentSales.chances[key] = {};
+                    }
+                    if (!currentSales.chances[key][number]) {
+                        currentSales.chances[key][number] = 0;
+                    }
+                    currentSales.chances[key][number] += pieces;
+                    console.log(`Sumando ${pieces} tiempos para el chance ${number}, total: ${currentSales.chances[key][number]}`);
+                } else if (number.length === 4) { // Billetes (4 cifras)
+                    if (!currentSales.billetes[key]) {
+                        currentSales.billetes[key] = {};
+                    }
+                    if (!currentSales.billetes[key][number]) {
+                        currentSales.billetes[key][number] = 0;
+                    }
+                    currentSales.billetes[key][number] += pieces;
+                    console.log(`Sumando ${pieces} tiempos para el billete ${number}, total: ${currentSales.billetes[key][number]}`);
+                }
+            });
+        });
+
+        console.log("Ventas actuales calculadas:", currentSales);
+    }
+
+    // Función para reiniciar las ventas actuales (útil para depuración)
+    function resetCurrentSales() {
+        currentSales = {
+            chances: {},
+            billetes: {}
+        };
+        console.log("Ventas actuales reiniciadas manualmente");
+        alert("Ventas actuales reiniciadas manualmente");
+    }
+
+    // Mostrar la página de configuración
+    function showConfigPage() {
+        document.getElementById('mainPage').style.display = 'none';
+        document.getElementById('salesPage').style.display = 'none';
+        document.getElementById('numberSalesPage').style.display = 'none';
+        document.getElementById('verifyWinnersPage').style.display = 'none';
+        document.getElementById('configPage').style.display = 'block';
+
+        // Actualizar los selectores de hora para los límites
+        updateLimitDrawTimes();
+        updateLimitBilleteDrawTimes();
+
+        // Mostrar límites actuales
+        displayCurrentLimits('chances');
+        displayCurrentLimits('billetes');
+    }
+
+    // Cambiar entre pestañas de límites
+    function switchLimitTab(tab) {
+        // Actualizar estilos de las pestañas
+        document.getElementById('chancesLimitTab').classList.toggle('active', tab === 'chances');
+        document.getElementById('billetesLimitTab').classList.toggle('active', tab === 'billetes');
+
+        // Mostrar/ocultar los contenedores correspondientes
+        document.getElementById('chancesLimitContainer').style.display = tab === 'chances' ? 'block' : 'none';
+        document.getElementById('billetesLimitContainer').style.display = tab === 'billetes' ? 'block' : 'none';
+
+        // Mostrar límites actuales
+        displayCurrentLimits(tab);
+    }
+
+    // Actualizar selectores de hora para límites (chances)
+   function updateLimitDrawTimes() {
+    const lotteryType = document.getElementById('limitLotteryType').value;
+    const timeSelect = document.getElementById('limitDrawTimeSelect');
+    timeSelect.innerHTML = '<option value="">Seleccione hora de sorteo</option>';
+    
+    const baseLottery = getBaseLottery(lotteryType);
+
+    if (lotteryType && baseLottery !== 'PANAMA') {
+        timeSelect.disabled = false;
+        lotteryTimes[lotteryType].forEach(time => {
+            timeSelect.innerHTML += `<option value="${time}">${time}</option>`;
+        });
+    } else {
+        timeSelect.disabled = true;
+    }
+}
+
+    // Actualizar selectores de hora para límites (billetes)
+    function updateLimitBilleteDrawTimes() {
+    const lotteryType = document.getElementById('limitBilleteLotteryType').value;
+    const timeSelect = document.getElementById('limitBilleteDrawTimeSelect');
+    timeSelect.innerHTML = '<option value="">Seleccione hora de sorteo</option>';
+    
+    const baseLottery = getBaseLottery(lotteryType);
+
+    if (lotteryType && baseLottery !== 'PANAMA') {
+        timeSelect.disabled = false;
+        lotteryTimes[lotteryType].forEach(time => {
+            timeSelect.innerHTML += `<option value="${time}">${time}</option>`;
+        });
+    } else {
+        timeSelect.disabled = true;
+    }
+}
+    // Establecer límite global para todos los números
+    function setGlobalLimit(type) {
+        let lottery, drawTime, globalLimit, key;
+
+        if (type === 'chances') {
+            lottery = document.getElementById('limitLotteryType').value;
+            drawTime = document.getElementById('limitDrawTimeSelect').value || 'default';
+            globalLimit = parseInt(document.getElementById('globalChancesLimit').value, 10);
+        } else if (type === 'billetes') {
+            lottery = document.getElementById('limitBilleteLotteryType').value;
+            drawTime = document.getElementById('limitBilleteDrawTimeSelect').value || 'default';
+            globalLimit = parseInt(document.getElementById('globalBilletesLimit').value, 10);
+        }
+
+        if (!lottery) {
+            alert('Por favor seleccione una lotería');
+            return;
+        }
+
+        if (isNaN(globalLimit) || globalLimit < 0) {
+            alert('Por favor ingrese un límite válido (número positivo)');
+            return;
+        }
+
+        key = `${lottery}_${drawTime}`;
+
+        // Inicializar el objeto de límites si no existe
+        if (type === 'chances') {
+            if (!salesLimits.chances[key]) {
+                salesLimits.chances[key] = {
+                    globalLimit: 0,
+                    numbers: {}
+                };
+            }
+            salesLimits.chances[key].globalLimit = globalLimit;
+        } else if (type === 'billetes') {
+            if (!salesLimits.billetes[key]) {
+                salesLimits.billetes[key] = {
+                    globalLimit: 0,
+                    numbers: {}
+                };
+            }
+            salesLimits.billetes[key].globalLimit = globalLimit;
+        }
+
+        // Guardar en localStorage
+        localStorage.setItem('lotteryLimits', JSON.stringify(salesLimits));
+
+        // Actualizar visualización de límites actuales
+        displayCurrentLimits(type);
+
+        const typeText = type === 'chances' ? 'chances' : 'billetes';
+        alert(`Límite global de ${globalLimit} tiempos establecido para cada ${typeText} de ${lottery} - ${drawTime || 'Todos los sorteos'}`);
+    }
+
+    // Establecer límite individual para un número específico
+    function setIndividualLimit(type) {
+        let lottery, drawTime, number, limit, key;
+
+        if (type === 'chances') {
+            lottery = document.getElementById('limitLotteryType').value;
+            drawTime = document.getElementById('limitDrawTimeSelect').value || 'default';
+            number = document.getElementById('chanceNumber').value.padStart(2, '0');
+            limit = parseInt(document.getElementById('chanceLimit').value, 10);
+
+            if (!lottery) {
+                alert('Por favor seleccione una lotería');
+                return;
+            }
+
+            if (!number || number.length !== 2 || isNaN(parseInt(number, 10))) {
+                alert('Por favor ingrese un número válido de 2 cifras (00-99)');
+                return;
+            }
+
+        } else if (type === 'billetes') {
+            lottery = document.getElementById('limitBilleteLotteryType').value;
+            drawTime = document.getElementById('limitBilleteDrawTimeSelect').value || 'default';
+            number = document.getElementById('billeteNumber').value.padStart(4, '0');
+            limit = parseInt(document.getElementById('billeteLimit').value, 10);
+
+            if (!lottery) {
+                alert('Por favor seleccione una lotería');
+                return;
+            }
+
+            if (!number || number.length !== 4 || isNaN(parseInt(number, 10))) {
+                alert('Por favor ingrese un número válido de 4 cifras (0000-9999)');
+                return;
+            }
+        }
+
+        if (isNaN(limit) || limit < 0) {
+            alert('Por favor ingrese un límite válido (número positivo)');
+            return;
+        }
+
+        key = `${lottery}_${drawTime}`;
+
+        // Inicializar el objeto de límites si no existe
+        if (type === 'chances') {
+            if (!salesLimits.chances[key]) {
+                salesLimits.chances[key] = {
+                    globalLimit: 0,
+                    numbers: {}
+                };
+            }
+            // Asegurarse de que exista el objeto numbers
+            if (!salesLimits.chances[key].numbers) {
+                salesLimits.chances[key].numbers = {};
+            }
+            salesLimits.chances[key].numbers[number] = limit;
+        } else if (type === 'billetes') {
+            if (!salesLimits.billetes[key]) {
+                salesLimits.billetes[key] = {
+                    globalLimit: 0,
+                    numbers: {}
+                };
+            }
+            // Asegurarse de que exista el objeto numbers
+            if (!salesLimits.billetes[key].numbers) {
+                salesLimits.billetes[key].numbers = {};
+            }
+            salesLimits.billetes[key].numbers[number] = limit;
+        }
+
+        // Guardar en localStorage
+        localStorage.setItem('lotteryLimits', JSON.stringify(salesLimits));
+
+        // Actualizar visualización de límites actuales
+        displayCurrentLimits(type);
+
+        // Limpiar los campos después de establecer el límite
+        if (type === 'chances') {
+            document.getElementById('chanceNumber').value = '';
+            document.getElementById('chanceLimit').value = '';
+        } else {
+            document.getElementById('billeteNumber').value = '';
+            document.getElementById('billeteLimit').value = '';
+        }
+
+        alert(`Límite de ${limit} tiempos establecido para el número ${number} - ${lottery} - ${drawTime || 'Todos los sorteos'}`);
+    }
+
+    // Mostrar límites actuales
+    function displayCurrentLimits(type) {
+        const container = document.getElementById(type === 'chances' ? 'currentChancesLimits' : 'currentBilletesLimits');
+        container.innerHTML = '';
+
+        // Obtener la categoría correcta de límites
+        const limits = type === 'chances' ? salesLimits.chances : salesLimits.billetes;
+
+        // Si no hay límites configurados
+        if (!limits || Object.keys(limits).length === 0) {
+            container.innerHTML = '<p>No hay límites configurados actualmente.</p>';
+            return;
+        }
+
+        // Generar contenido HTML para mostrar los límites
+        let html = '';
+
+        for (const key in limits) {
+            const [lottery, drawTime] = key.split('_');
+            html += `<div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee;">`;
+            html += `<h5>${lottery} - ${drawTime === 'default' ? 'Todos los sorteos' : drawTime}</h5>`;
+
+            // Mostrar límite global
+            if (limits[key].globalLimit) {
+                html += `<p><strong>Límite Global para cada número:</strong> ${limits[key].globalLimit} tiempos</p>`;
+            }
+
+            // Mostrar límites individuales
+            const numbers = limits[key].numbers || {};
+            if (Object.keys(numbers).length > 0) {
+                html += `<p><strong>Límites Individuales:</strong></p>`;
+                html += `<div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px;">`;
+
+                for (const number in numbers) {
+                    html += `<div style="border: 1px solid #ddd; padding: 5px; text-align: center;">
+                        ${number}: ${numbers[number]}
+                    </div>`;
+                }
+
+                html += `</div>`;
+            } else {
+                html += `<p>No hay límites individuales configurados.</p>`;
+            }
+
+            // Botón para eliminar configuración de esta lotería y sorteo
+            html += `<button onclick="removeLimitConfig('${type}', '${key}')"
+                      style="margin-top: 10px; background-color: #ff4d4d; color: white;">
+                      Eliminar Configuración
+                    </button>`;
+
+            html += `</div>`;
+        }
+
+        container.innerHTML = html;
+    }
+    // Eliminar configuración de límites para una lotería y sorteo específicos
+    function removeLimitConfig(type, key) {
+        if (confirm('¿Está seguro de eliminar esta configuración de límites?')) {
+            if (type === 'chances') {
+                delete salesLimits.chances[key];
+            } else {
+                delete salesLimits.billetes[key];
+            }
+
+            // Guardar en localStorage
+            localStorage.setItem('lotteryLimits', JSON.stringify(salesLimits));
+
+            // Actualizar visualización
+            displayCurrentLimits(type);
+        }
+    }
+
+    // Guardar configuración y volver a la página principal
+    function saveConfigAndReturn() {
+        // La configuración ya se ha guardado en cada cambio
+        // Ocultar explícitamente la página de configuración
+        document.getElementById('configPage').style.display = 'none';
+
+        // Llamar a la función para mostrar la página principal
+        showMainPage();
+    }
+
+    // Verificar límites antes de agregar un número
+    function checkLimits(number, pieces) {
+        const lotteryType = document.getElementById('lotteryType').value;
+        const drawTime = document.getElementById('drawTimeSelect').value || 'default';
+        const key = `${lotteryType}_${drawTime}`;
+
+        // Determinar si es un chance (2 cifras) o un billete (4 cifras)
+        const isChance = number.length === 2;
+        const type = isChance ? 'chances' : 'billetes';
+        const limits = isChance ? salesLimits.chances[key] : salesLimits.billetes[key];
+
+        // Si no hay límites configurados para esta lotería y sorteo, permitir la venta
+        if (!limits) {
+            return true;
+        }
+
+        // Obtener ventas actuales
+        if (!currentSales[type][key]) {
+            currentSales[type][key] = {};
+        }
+        const currentNumberSales = currentSales[type][key][number] || 0;
+
+        // Verificar límite individual para este número específico
+        if (limits.numbers && limits.numbers[number] !== undefined) {
+            // Tenemos un límite específico para este número
+            const limit = limits.numbers[number];
+            if (currentNumberSales + pieces > limit) {
+                alert(`¡Límite excedido! Solo puede vender ${limit} tiempos del número ${number} y ya ha vendido ${currentNumberSales}.`);
+                return false;
+            }
+        } else if (limits.globalLimit) {
+            // No hay límite específico, pero hay un límite global para todos los números de este tipo
+            // Este límite global se aplica a cada número individualmente
+            if (currentNumberSales + pieces > limits.globalLimit) {
+                alert(`¡Límite excedido! Solo puede vender ${limits.globalLimit} tiempos del número ${number} y ya ha vendido ${currentNumberSales}.`);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Establecer límite global para billetes (4 cifras)
+    function setGlobalBilletesLimit() {
+        const lottery = document.getElementById('limitBilleteLotteryType').value;
+        const drawTime = document.getElementById('limitBilleteDrawTimeSelect').value || 'default';
+        const globalLimit = parseInt(document.getElementById('globalBilletesLimit').value, 10);
+
+        if (!lottery) {
+            alert('Por favor seleccione una lotería');
+            return;
+        }
+
+        if (isNaN(globalLimit) || globalLimit < 0) {
+            alert('Por favor ingrese un límite válido (número positivo)');
+            return;
+        }
+
+        const key = `${lottery}_${drawTime}`;
+
+        // Inicializar el objeto de límites si no existe
+        if (!salesLimits.billetes[key]) {
+            salesLimits.billetes[key] = {
+                globalLimit: 0
+            };
+        }
+
+        // Establecer el límite global
+        salesLimits.billetes[key].globalLimit = globalLimit;
+
+        // Guardar en localStorage
+        localStorage.setItem('lotteryLimits', JSON.stringify(salesLimits));
+
+        // Actualizar visualización de límites actuales
+        displayCurrentLimits('billetes');
+
+        alert(`Límite global de ${globalLimit} tiempos establecido para billetes de ${lottery} - ${drawTime || 'Todos los sorteos'}`);
+    }
+
+    // Función para calcular totales de ventas
+function calculateSalesTotals(type) {
+    const tickets = loadTickets();
+    const filterLottery = document.getElementById('filterLotteryType').value;
+    const filterTime = document.getElementById('filterDrawTimeSelect').value;
+    const filterDate = document.getElementById('salesFilterDate').value;
+
+    let totalTiempos = 0;
+    let totalColones = 0;
+
+    let selectedDateStart = null;
+    let selectedDateEnd = null;
+
+    if (filterDate) {
+        selectedDateStart = new Date(filterDate + 'T00:00:00');
+        selectedDateEnd = new Date(filterDate + 'T23:59:59');
+    }
+
+    tickets.forEach(ticket => {
+        const ticketDate = new Date(ticket.datetime);
+        let passesFilters = true;
+
+        if (filterLottery && ticket.lottery !== filterLottery) {
+            passesFilters = false;
+        }
+
+        if (filterTime && ticket.drawTime !== filterTime) {
+            passesFilters = false;
+        }
+
+        if (filterDate && (ticketDate < selectedDateStart || ticketDate > selectedDateEnd)) {
+            passesFilters = false;
+        }
+
+        if (passesFilters) {
+            ticket.numbers.forEach(num => {
+                if ((type === 'tiempos' && num.number.length === 2) ||
+                    (type === 'billetes' && num.number.length === 4)) {
+
+                    const pieces = parseFloat(num.pieces);
+                    const subTotal = parseFloat(num.subTotal);
+
+                    totalTiempos += pieces;
+                    totalColones += subTotal;
+                }
+            });
+        }
+    });
+
+    return { totalTiempos, totalColones };
+}
+
+// Función para mostrar resumen de totales
+function displaySalesSummary(type) {
+    const totals = calculateSalesTotals(type);
+    const summaryBox = document.getElementById('salesSummaryBox');
+
+    if (totals.totalTiempos > 0) {
+        summaryBox.style.display = 'block';
+
+        const totalTiemposDisplay = totals.totalTiempos % 1 !== 0 ?
+            totals.totalTiempos.toFixed(1) :
+            totals.totalTiempos.toString();
+
+        document.getElementById('totalTiempos').textContent = totalTiemposDisplay;
+        document.getElementById('totalColones').textContent = '$' + totals.totalColones.toFixed(2);
+
+        const title = type === 'tiempos' ? 'Resumen' : 'Resumen';
+        summaryBox.querySelector('h3').textContent = title;
+    } else {
+        summaryBox.style.display = 'none';
+    }
+}
+
+// Función para capturar y compartir la pantalla
+async function captureAndShareScreen() {
+    const button = document.getElementById('screenshotButton');
+
+    try {
+        button.textContent = '📸 Capturando...';
+        button.classList.add('capturing');
+        button.disabled = true;
+
+        const captureContainer = createScreenshotContainer();
+        document.body.appendChild(captureContainer);
+
+        const canvas = await html2canvas(captureContainer, {
+            scale: 2,
+            backgroundColor: '#ffffff',
+            logging: false,
+            width: 800,
+            height: captureContainer.scrollHeight,
+            useCORS: true,
+            allowTaint: true
+        });
+
+        document.body.removeChild(captureContainer);
+        const base64 = canvas.toDataURL('image/png', 0.9);
+
+        if (typeof Android !== 'undefined' && Android.shareImageFromAndroid) {
+            Android.shareImageFromAndroid(base64, 'Reporte de Tiempos Vendidos');
+        } else {
+            downloadImage(base64, 'tiempos-vendidos.png');
+        }
+
+    } catch (error) {
+        console.error('Error al capturar pantalla:', error);
+        alert('Error al generar la captura de pantalla. Intente nuevamente.');
+    } finally {
+        button.textContent = '📸 Capturar y Compartir por WhatsApp';
+        button.classList.remove('capturing');
+        button.disabled = false;
+    }
+}
+
+// Función para crear el contenedor de captura
+function createScreenshotContainer() {
+    const container = document.createElement('div');
+    container.className = 'screenshot-container';
+    container.style.position = 'absolute';
+    container.style.left = '-9999px';
+    container.style.width = '800px';
+    container.style.fontFamily = 'Arial, sans-serif';
+
+    const filterLottery = document.getElementById('filterLotteryType').value || 'Todas';
+    const filterTime = document.getElementById('filterDrawTimeSelect').value || 'Todas las Horas';
+    const filterDate = document.getElementById('salesFilterDate').value || 'Todas';
+    const currentTab = activeTab === 'tiempos' ? 'Tiempos (2 cifras)' : 'Billetes (4 cifras)';
+
+    const header = document.createElement('div');
+    header.className = 'screenshot-header';
+    header.innerHTML = `
+        <h2>REPORTE DE ${currentTab.toUpperCase()}</h2>
+        <div class="filters-info">
+            <div><strong>Lotería:</strong> ${filterLottery}</div>
+            <div><strong>Hora:</strong> ${filterTime}</div>
+            <div><strong>Fecha:</strong> ${filterDate}</div>
+            <div><strong>Generado:</strong> ${new Date().toLocaleString('es-ES')}</div>
+        </div>
+    `;
+    container.appendChild(header);
+
+    const summaryBox = document.getElementById('salesSummaryBox');
+    if (summaryBox.style.display !== 'none') {
+        const summaryClone = summaryBox.cloneNode(true);
+        summaryClone.style.margin = '20px';
+        container.appendChild(summaryClone);
+    }
+
+    let gridToClone;
+    if (activeTab === 'tiempos') {
+        gridToClone = document.getElementById('numberSalesGrid');
+    } else {
+        gridToClone = document.getElementById('billetesSalesGrid');
+    }
+
+    if (gridToClone) {
+        const gridClone = gridToClone.cloneNode(true);
+        gridClone.style.margin = '20px';
+        gridClone.style.fontSize = '14px';
+        container.appendChild(gridClone);
+    }
+
+    const footer = document.createElement('div');
+    footer.style.textAlign = 'center';
+    footer.style.padding = '20px';
+    footer.style.fontSize = '12px';
+    footer.style.color = '#666';
+    footer.innerHTML = `
+        <div>Sistema de Lotería APM13</div>
+        <div>Reporte generado automáticamente</div>
+    `;
+    container.appendChild(footer);
+
+    return container;
+}
+
+// Función para descargar imagen (fallback)
+function downloadImage(base64, filename) {
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = base64;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    alert('Imagen descargada. Puede compartirla manualmente por WhatsApp.');
+}
+
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('data:application/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdpbnN0YWxsJywgZXZlbnQgPT4ge30pO3NlbGYuYWRkRXZlbnRMaXN0ZW5lcignZmV0Y2gnLCBldmVudCA9PiB7fSk7')
+            .then(() => console.log('Service Worker Registered'))
+            .catch(error => console.log('Service Worker Registration Failed:', error));
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+    });
+</script>
+</body>
+</html>
