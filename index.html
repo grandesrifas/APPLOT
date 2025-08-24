@@ -397,6 +397,98 @@
         opacity: 0.9;
     }
 
+    /* Estilos para porcentajes de vendedor */
+.percentage-breakdown {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.percentage-item {
+    background-color: white;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    text-align: center;
+}
+
+.percentage-item.seller {
+    border-color: #28a745;
+    background-color: #f8fff9;
+}
+
+.percentage-item.admin {
+    border-color: #007bff;
+    background-color: #f8f9ff;
+}
+
+.percentage-value {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.percentage-label {
+    font-size: 0.85em;
+    color: #6c757d;
+}
+
+.percentage-config-button {
+    background-color: #17a2b8 !important;
+    color: white !important;
+    margin-top: 10px;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.percentage-config-button:hover {
+    background-color: #138496 !important;
+}
+
+/* Modal para configurar porcentaje */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 400px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: black;
+}
+
     </style>
 </head>
 <body>
@@ -839,6 +931,34 @@
     <button onclick="saveConfigAndReturn()" style="margin-top: 20px;">Guardar Configuración y Volver</button>
 </div>
 
+<!-- Modal para configurar porcentaje del vendedor -->
+<div id="percentageModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Configurar Porcentaje del Vendedor</h3>
+            <span class="close-modal" onclick="closePercentageModal()">&times;</span>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label for="passwordForPercentage">Contraseña de administrador:</label>
+            <input type="password" id="passwordForPercentage" style="width: 100%; padding: 8px; margin-top: 5px;">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label for="sellerPercentageInput">Porcentaje del vendedor (%):</label>
+            <input type="number" id="sellerPercentageInput" min="0" max="100" step="0.1" 
+                   style="width: 100%; padding: 8px; margin-top: 5px;" placeholder="Ej: 15">
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="saveSellerPercentage()" style="flex: 1; background-color: #28a745; color: white;">
+                Guardar
+            </button>
+            <button onclick="closePercentageModal()" style="flex: 1; background-color: #6c757d; color: white;">
+                Cancelar
+            </button>
+        </div>
+        <p id="percentageError" style="color: red; margin-top: 10px; display: none;"></p>
+    </div>
+</div>
+
 </body>
 
 
@@ -1062,13 +1182,16 @@ function getDisplayName(lotteryType) {
 
     // Inicializar
     function initApp() {
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-        loadTickets();
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+    loadTickets();
 
-        // Inicializar límites y ventas actuales
-        initLimitsAndSales();
-    }
+    // Inicializar límites y ventas actuales
+    initLimitsAndSales();
+    
+    // Inicializar porcentaje del vendedor - AGREGAR ESTA LÍNEA
+    initSellerPercentage();
+}
 
     function updateDrawTimes() {
     const lotteryType = document.getElementById('lotteryType').value;
@@ -2934,6 +3057,7 @@ function calculateSalesTotals(type) {
 }
 
 // Función para mostrar resumen de totales
+// Función para mostrar resumen de totales con porcentajes
 function displaySalesSummary(type) {
     const totals = calculateSalesTotals(type);
     const summaryBox = document.getElementById('salesSummaryBox');
@@ -2950,6 +3074,9 @@ function displaySalesSummary(type) {
 
         const title = type === 'tiempos' ? 'Resumen' : 'Resumen';
         summaryBox.querySelector('h3').textContent = title;
+
+        // Agregar breakdown de porcentajes
+        addPercentageBreakdown(summaryBox, totals.totalColones);
     } else {
         summaryBox.style.display = 'none';
     }
@@ -3023,6 +3150,17 @@ function createScreenshotContainer() {
     `;
     container.appendChild(header);
 
+    // Asegurar que el breakdown de porcentajes se incluya en la captura
+const summaryInContainer = container.querySelector('.sales-summary-box');
+if (summaryInContainer) {
+    addPercentageBreakdown(summaryInContainer, calculateSalesTotals(activeTab).totalColones);
+    // Remover el botón de configuración de la captura
+    const configButton = summaryInContainer.querySelector('.percentage-config-button');
+    if (configButton) {
+        configButton.remove();
+    }
+}
+
     const summaryBox = document.getElementById('salesSummaryBox');
     if (summaryBox.style.display !== 'none') {
         const summaryClone = summaryBox.cloneNode(true);
@@ -3068,6 +3206,123 @@ function downloadImage(base64, filename) {
     document.body.removeChild(link);
 
     alert('Imagen descargada. Puede compartirla manualmente por WhatsApp.');
+}
+
+// Variables para porcentajes
+let sellerPercentage = 15; // Porcentaje por defecto del vendedor
+
+// Inicializar porcentaje desde localStorage
+function initSellerPercentage() {
+    const savedPercentage = localStorage.getItem('sellerPercentage');
+    if (savedPercentage) {
+        sellerPercentage = parseFloat(savedPercentage);
+    }
+}
+
+// Agregar breakdown de porcentajes al resumen
+function addPercentageBreakdown(summaryBox, totalAmount) {
+    // Remover breakdown previo si existe
+    const existingBreakdown = summaryBox.querySelector('.percentage-breakdown');
+    if (existingBreakdown) {
+        existingBreakdown.remove();
+    }
+
+    // Remover botón previo si existe
+    const existingButton = summaryBox.querySelector('.percentage-config-button');
+    if (existingButton) {
+        existingButton.remove();
+    }
+
+    if (totalAmount > 0) {
+        const sellerAmount = (totalAmount * sellerPercentage) / 100;
+        const adminAmount = totalAmount - sellerAmount;
+
+        const breakdown = document.createElement('div');
+        breakdown.className = 'percentage-breakdown';
+        breakdown.innerHTML = `
+            <div class="percentage-item seller">
+                <div class="percentage-value">$${sellerAmount.toFixed(2)}</div>
+                <div class="percentage-label">Vendedor (${sellerPercentage}%)</div>
+            </div>
+            <div class="percentage-item admin">
+                <div class="percentage-value">$${adminAmount.toFixed(2)}</div>
+                <div class="percentage-label">Administrador (${(100 - sellerPercentage)}%)</div>
+            </div>
+        `;
+
+        summaryBox.appendChild(breakdown);
+
+        // Agregar botón de configuración
+        const configButton = document.createElement('button');
+        configButton.className = 'percentage-config-button';
+        configButton.textContent = 'Configurar Porcentaje';
+        configButton.onclick = openPercentageModal;
+        summaryBox.appendChild(configButton);
+    }
+}
+
+// Abrir modal de configuración de porcentaje
+function openPercentageModal() {
+    const modal = document.getElementById('percentageModal');
+    const input = document.getElementById('sellerPercentageInput');
+    const passwordInput = document.getElementById('passwordForPercentage');
+    const errorElement = document.getElementById('percentageError');
+    
+    input.value = sellerPercentage;
+    passwordInput.value = '';
+    errorElement.style.display = 'none';
+    modal.style.display = 'block';
+}
+
+// Cerrar modal de configuración de porcentaje
+function closePercentageModal() {
+    const modal = document.getElementById('percentageModal');
+    modal.style.display = 'none';
+}
+
+// Guardar nuevo porcentaje del vendedor
+function saveSellerPercentage() {
+    const password = document.getElementById('passwordForPercentage').value;
+    const newPercentage = parseFloat(document.getElementById('sellerPercentageInput').value);
+    const errorElement = document.getElementById('percentageError');
+
+    // Verificar contraseña
+    if (password !== PASSWORD) {
+        errorElement.textContent = 'Contraseña incorrecta.';
+        errorElement.style.display = 'block';
+        return;
+    }
+
+    // Validar porcentaje
+    if (isNaN(newPercentage) || newPercentage < 0 || newPercentage > 100) {
+        errorElement.textContent = 'Ingrese un porcentaje válido entre 0 y 100.';
+        errorElement.style.display = 'block';
+        return;
+    }
+
+    // Guardar el nuevo porcentaje
+    sellerPercentage = newPercentage;
+    localStorage.setItem('sellerPercentage', sellerPercentage.toString());
+
+    // Cerrar modal
+    closePercentageModal();
+
+    // Actualizar la visualización
+    if (activeTab === 'tiempos') {
+        updateNumberSalesTable();
+    } else {
+        updateBilletesSalesTable();
+    }
+
+    alert(`Porcentaje del vendedor actualizado a ${sellerPercentage}%`);
+}
+
+// Cerrar modal al hacer clic fuera de él
+window.onclick = function(event) {
+    const modal = document.getElementById('percentageModal');
+    if (event.target === modal) {
+        closePercentageModal();
+    }
 }
 
 
