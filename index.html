@@ -68,34 +68,200 @@
             box-sizing: border-box;
         }
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #e0e0e0;
-            color: #333;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-bottom: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
+    button {
+    width: 100%;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #8e9eab 0%, #6c7b7f 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(142, 158, 171, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
-        button:hover {
-            background-color: #d0d0d0;
-        }
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(142, 158, 171, 0.5);
+    background: linear-gradient(135deg, #a8b8c2 0%, #8e9eab 100%);
+}
 
-        .ticket-preview {
-            background: white;
-            padding: 20px;
-            max-width: 400px;
-            margin: 20px auto;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            display: none;
-        }
+button:active {
+    transform: translateY(0px);
+    box-shadow: 0 2px 10px rgba(142, 158, 171, 0.3);
+}
 
+/* Todos los botones específicos ahora en gris metalizado */
+button[onclick*="generateTicket"] {
+    background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+    box-shadow: 0 4px 15px rgba(149, 165, 166, 0.4);
+}
+
+button[onclick*="generateTicket"]:hover {
+    background: linear-gradient(135deg, #b4c6c7 0%, #95a5a6 100%);
+    box-shadow: 0 6px 20px rgba(149, 165, 166, 0.5);
+}
+
+button[onclick*="showSalesPage"] {
+    background: linear-gradient(135deg, #90a4ae 0%, #78909c 100%);
+    box-shadow: 0 4px 15px rgba(144, 164, 174, 0.4);
+}
+
+button[onclick*="showSalesPage"]:hover {
+    background: linear-gradient(135deg, #a8bcc8 0%, #90a4ae 100%);
+    box-shadow: 0 6px 20px rgba(144, 164, 174, 0.5);
+}
+
+button[onclick*="showNumberSalesPage"] {
+    background: linear-gradient(135deg, #8d9db6 0%, #667292 100%);
+    box-shadow: 0 4px 15px rgba(141, 157, 182, 0.4);
+}
+
+button[onclick*="showNumberSalesPage"]:hover {
+    background: linear-gradient(135deg, #a5b7d1 0%, #8d9db6 100%);
+    box-shadow: 0 6px 20px rgba(141, 157, 182, 0.5);
+}
+
+button[onclick*="showVerifyWinnersPage"] {
+    background: linear-gradient(135deg, #9e9e9e 0%, #757575 100%);
+    box-shadow: 0 4px 15px rgba(158, 158, 158, 0.4);
+}
+
+button[onclick*="showVerifyWinnersPage"]:hover {
+    background: linear-gradient(135deg, #bdbdbd 0%, #9e9e9e 100%);
+    box-shadow: 0 6px 20px rgba(158, 158, 158, 0.5);
+}
+
+/* Botones de eliminar - gris más oscuro */
+.ticket-actions button:last-child,
+button[onclick*="deleteTicket"],
+button[onclick*="deleteSalesByDate"] {
+    background: linear-gradient(135deg, #616161 0%, #424242 100%) !important;
+    box-shadow: 0 4px 15px rgba(97, 97, 97, 0.4) !important;
+}
+
+.ticket-actions button:last-child:hover,
+button[onclick*="deleteTicket"]:hover,
+button[onclick*="deleteSalesByDate"]:hover {
+    background: linear-gradient(135deg, #757575 0%, #616161 100%) !important;
+    box-shadow: 0 6px 20px rgba(97, 97, 97, 0.5) !important;
+}
+
+/* Botones pequeños de acciones en tickets */
+.ticket-actions button {
+    padding: 8px 12px;
+    font-size: 12px;
+    margin: 2px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #8e9eab 0%, #6c7b7f 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(142, 158, 171, 0.4);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.ticket-actions button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(142, 158, 171, 0.5);
+    background: linear-gradient(135deg, #a8b8c2 0%, #8e9eab 100%);
+}
+
+/* Botón de compartir ticket */
+.screenshot-button {
+    background: linear-gradient(135deg, #90a4ae 0%, #78909c 100%) !important;
+    color: white !important;
+    border: none !important;
+    padding: 15px 25px;
+    border-radius: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-shadow: 0 4px 20px rgba(144, 164, 174, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.screenshot-button:hover {
+    background: linear-gradient(135deg, #a8bcc8 0%, #90a4ae 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(144, 164, 174, 0.5);
+}
+
+.screenshot-button:disabled {
+    background: linear-gradient(135deg, #ccc 0%, #999 100%) !important;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.capturing {
+    background: linear-gradient(135deg, #b0bec5 0%, #90a4ae 100%) !important;
+}
+
+/* Botón de configurar porcentaje */
+.percentage-config-button {
+    background: linear-gradient(135deg, #8d9db6 0%, #667292 100%) !important;
+    color: white !important;
+    margin-top: 15px;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(141, 157, 182, 0.4);
+    transition: all 0.3s ease;
+}
+
+.percentage-config-button:hover {
+    background: linear-gradient(135deg, #a5b7d1 0%, #8d9db6 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(141, 157, 182, 0.5);
+}
+
+/* Botones en modal */
+.modal-content button {
+    border-radius: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 12px rgba(142, 158, 171, 0.3);
+    background: linear-gradient(135deg, #8e9eab 0%, #6c7b7f 100%);
+}
+
+.modal-content button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 16px rgba(142, 158, 171, 0.4);
+    background: linear-gradient(135deg, #a8b8c2 0%, #8e9eab 100%);
+}
+
+/* Botones de volver */
+button[onclick*="showMainPage"] {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
+}
+
+button[onclick*="showMainPage"]:hover {
+    background: linear-gradient(135deg, #868e96 0%, #6c757d 100%);
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.5);
+}
         .ticket-content {
             padding: 15px;
         }
@@ -267,24 +433,63 @@
         .number-item.highlight, .billete-item.highlight {
             background-color: #e0f7ff; /* Azul claro */
         }
-            /* Estilos para las pestañas */
-            .tabs {
-                display: flex;
-                border-bottom: 1px solid #ccc;
-                margin-bottom: 15px;
-            }
+/* Estilos para las pestañas */
+.tabs {
+    display: flex;
+    justify-content: center; /* Centrar los botones */
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 5px; /* Agregar padding al contenedor */
+    gap: 10px; /* Espacio entre botones */
+}
 
-            .tab-button {
-                padding: 10px 20px;
-                background: none;
-                border: none;
-                cursor: pointer;
-            }
+.tab-button {
+    flex: none; /* Cambiar de flex: 1 a flex: none */
+    width: auto; /* Ancho automático */
+    max-width: 180px; /* Ancho máximo reducido */
+    padding: 12px 25px; /* Reducir padding */
+    margin: 5px; /* Agregar margen para separación */
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    color: #6c757d;
+    border: none;
+    border-radius: 6px; /* Agregar bordes redondeados */
+    cursor: pointer;
+    font-size: 16px; /* Reducir tamaño de fuente */
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+}
 
-            .tab-button.active {
-                border-bottom: 2px solid #1890ff;
-                font-weight: bold;
-            }
+
+.tab-button:hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    color: #495057;
+}
+
+.tab-button.active {
+    background: linear-gradient(135deg, #8e9eab 0%, #6c7b7f 100%);
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* Cambiar la sombra */
+    border: 2px solid #495057; /* Agregar borde en lugar de border-bottom */
+}
+
+.tab-button.active:hover {
+    background: linear-gradient(135deg, #a8b8c2 0%, #8e9eab 100%);
+    color: white;
+}
+
+/* Contenedor de pestañas con mejor estilo */
+.tab-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
 
             .info-text {
                 margin-bottom: 10px;
@@ -378,24 +583,46 @@
         margin: 0;
     }
 
-    .screenshot-header {
-        background-color: #007bff;
-        color: white;
-        padding: 15px;
-        text-align: center;
-        margin-bottom: 20px;
-    }
+.screenshot-header {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px; /* Reducir padding de 15px a 10px */
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-    .screenshot-header h2 {
-        margin: 0;
-        font-size: 1.8em;
-    }
+.screenshot-header .filters-info-horizontal {
+    margin: 0; /* Sin margen extra */
+}
 
-    .screenshot-header .filters-info {
-        margin-top: 10px;
-        font-size: 0.9em;
-        opacity: 0.9;
-    }
+.screenshot-header .filters-info-horizontal div {
+    background-color: rgba(255,255,255,0.1); /* Fondo sutil para cada item */
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 13px; /* Tamaño de fuente más pequeño */
+}
+
+.screenshot-header .filters-info-horizontal strong {
+    color: #ffffff;
+    margin-right: 5px;
+}
+
+.screenshot-header .filters-info {
+    margin-top: 15px;
+    font-size: 1.2em; /* Aumentar de 0.9em a 1.2em */
+    opacity: 1; /* Cambiar de 0.9 a 1 para más opacidad */
+    font-weight: 600; /* Agregar peso de fuente */
+    line-height: 1.8; /* Mejor espaciado entre líneas */
+}
+
+.screenshot-header .filters-info div {
+    margin-bottom: 8px; /* Espaciado entre cada línea */
+}
+
+.screenshot-header .filters-info strong {
+    font-size: 1.1em; /* Los labels más grandes */
+    color: #ffffff; /* Asegurar que sean blancos */
+}
 
     /* Estilos para porcentajes de vendedor */
 .percentage-breakdown {
@@ -489,6 +716,39 @@
     color: black;
 }
 
+/* AGREGAR ESTA SECCIÓN COMPLETA */
+.ticket-preview {
+    background: white;
+    padding: 20px;
+    max-width: 400px;
+    margin: 20px auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    display: none;
+}
+
+/* Mejorar inputs y selects */
+.input-group select,
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e1e8ed;
+    border-radius: 10px;
+    font-size: 16px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.input-group select:focus,
+.input-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
+}
+
     </style>
 </head>
 <body>
@@ -522,7 +782,7 @@
     <option value="LAPRIMERA">LAPRIMERA</option>
     <option value="TICA">TICA</option>
     <option value="NEWYORK">NEW YORK</option>
-    <option value="" disabled>────── REVENTADO ──────</option>
+    <option value="" disabled>───REVENTADO───</option>
     <option value="REVENTADO_PANAMA">REVENTADO PANAMA</option>
     <option value="REVENTADO_NICA">REVENTADO NICA</option>
     <option value="REVENTADO_MONAZO">REVENTADO MONAZO</option>
@@ -619,9 +879,9 @@
         <h3>Resumen de Ventas</h3>
         <div class="date-selector">
             <input type="date" id="salesDate" onchange="showSalesByDate(this.value)">
-            <button onclick="showTodaySales()">Ver Ventas de Hoy</button>
+            <button onclick="showTodaySales()">Ver Hoy</button>
             <button onclick="deleteSalesByDate()" style="background-color: #ff4d4d; color: white;">
-                Borrar Ventas del Día Seleccionado
+                Borrar Día
             </button>
         </div>
         <div class="sales-stats">
@@ -640,8 +900,8 @@
 
     <!-- Pestañas para alternar entre tiempos y billetes -->
     <div class="tabs">
-        <button id="tiemposTab" class="tab-button active" onclick="switchTab('tiempos')">Tiempos Vendidos</button>
-        <button id="billetesTab" class="tab-button" onclick="switchTab('billetes')">Billetes Vendidos</button>
+        <button id="tiemposTab" class="tab-button active" onclick="switchTab('tiempos')">CHANCES</button>
+        <button id="billetesTab" class="tab-button" onclick="switchTab('billetes')">BILLETES</button>
     </div>
 
     <!-- Filtros -->
@@ -655,7 +915,7 @@
                 <option value="LAPRIMERA">LAPRIMERA</option>
                 <option value="TICA">TICA</option>
                 <option value="NEWYORK">NEW YORK</option>
-                <option value="" disabled>────── REVENTADO ──────</option>
+                <option value="" disabled>───REVENTADO───</option>
                 <option value="REVENTADO_PANAMA">REVENTADO PANAMA</option>
                 <option value="REVENTADO_NICA">REVENTADO NICA</option>
                 <option value="REVENTADO_MONAZO">REVENTADO MONAZO</option>
@@ -676,7 +936,7 @@
         <div class="input-group">
             <input type="date" id="salesFilterDate" onchange="applyFilters()">
         </div>
-        <button onclick="applyFilters()">Aplicar Filtros</button>
+        <button onclick="applyFilters()">Filtrar</button>
     </div>
 
     <!-- Resumen de totales -->
@@ -696,7 +956,7 @@
 
     <!-- Botón de captura de pantalla -->
     <button id="screenshotButton" class="screenshot-button" onclick="captureAndShareScreen()">
-        📸 Capturar y Compartir por WhatsApp
+        Compartir por WhatsApp
     </button>
 
     <!-- Contenedor para tiempos vendidos (2 cifras) -->
@@ -704,7 +964,7 @@
         <div id="numberSalesGrid">
             <!-- Aquí se llenarán los números del 00 al 99 -->
         </div>
-        <button onclick="shareReport('tiempos')" style="margin-top: 20px;">Compartir Reporte de Tiempos</button>
+        <button onclick="shareReport('tiempos')" style="margin-top: 20px;">Compartir CSV</button>
     </div>
 
     <!-- Contenedor para billetes vendidos (4 cifras) -->
@@ -712,7 +972,7 @@
         <div id="billetesSalesGrid">
             <!-- Aquí se llenarán los billetes vendidos de 4 cifras -->
         </div>
-        <button onclick="shareReport('billetes')" style="margin-top: 20px;">Compartir Reporte de Billetes</button>
+        <button onclick="shareReport('billetes')" style="margin-top: 20px;">Compartir CSV</button>
     </div>
 
     <!-- Botón para volver a la página principal -->
@@ -739,7 +999,7 @@
     <option value="LAPRIMERA">LAPRIMERA</option>
     <option value="TICA">TICA</option>
     <option value="NEWYORK">NEW YORK</option>
-    <option value="" disabled>────── REVENTADO ──────</option>
+    <option value="" disabled>───REVENTADO───</option>
     <option value="REVENTADO_PANAMA">REVENTADO PANAMA</option>
     <option value="REVENTADO_NICA">REVENTADO NICA</option>
     <option value="REVENTADO_MONAZO">REVENTADO MONAZO</option>
@@ -770,7 +1030,7 @@
                 <input type="number" id="thirdPrize" placeholder="3er Premio" inputmode="numeric" pattern="[0-9]*">
             </div>
         </div>
-        <button onclick="checkWinningTickets()" style="margin-top: 15px;">Verificar Tickets Ganadores</button>
+        <button onclick="checkWinningTickets()" style="margin-top: 15px;">Verificar Ganadores</button>
     </div>
     
     <button onclick="showConfigPage()">Configurar Límites</button>
@@ -789,17 +1049,17 @@
     <!-- Pestañas para alternar entre chances y billetes -->
     <div class="tabs">
         <button id="chancesLimitTab" class="tab-button active" onclick="switchLimitTab('chances')">
-            Límites de Chances (2 cifras)
+            Chances
         </button>
         <button id="billetesLimitTab" class="tab-button" onclick="switchLimitTab('billetes')">
-            Límites de Billetes (4 cifras)
+            Billetes
         </button>
     </div>
 
     <!-- Configuración de límites para chances (2 cifras) -->
     <div id="chancesLimitContainer">
         <div style="margin-bottom: 15px;">
-            <h3>Configuración de Límites para Chances (2 cifras)</h3>
+            <h3>Config Límites chance</h3>
 
             <!-- Selector de lotería y hora -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
@@ -812,7 +1072,7 @@
     <option value="LAPRIMERA">LAPRIMERA</option>
     <option value="TICA">TICA</option>
     <option value="NEWYORK">NEW YORK</option>
-    <option value="" disabled>────── REVENTADO ──────</option>
+    <option value="" disabled>───REVENTADO───</option>
     <option value="REVENTADO_PANAMA">REVENTADO PANAMA</option>
     <option value="REVENTADO_NICA">REVENTADO NICA</option>
     <option value="REVENTADO_MONAZO">REVENTADO MONAZO</option>
@@ -864,7 +1124,7 @@
     <!-- Configuración de límites para billetes (4 cifras) -->
     <div id="billetesLimitContainer" style="display: none;">
         <div style="margin-bottom: 15px;">
-            <h3>Configuración de Límites para Billetes (4 cifras)</h3>
+            <h3>Config Límites Billetes</h3>
 
             <!-- Selector de lotería y hora -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
@@ -877,7 +1137,7 @@
     <option value="LAPRIMERA">LAPRIMERA</option>
     <option value="TICA">TICA</option>
     <option value="NEWYORK">NEW YORK</option>
-    <option value="" disabled>────── REVENTADO ──────</option>
+    <option value="" disabled>───REVENTADO───</option>
     <option value="REVENTADO_PANAMA">REVENTADO PANAMA</option>
     <option value="REVENTADO_NICA">REVENTADO NICA</option>
     <option value="REVENTADO_MONAZO">REVENTADO MONAZO</option>
@@ -928,7 +1188,7 @@
     </div>
 
     <!-- Botón para guardar configuración y volver -->
-    <button onclick="saveConfigAndReturn()" style="margin-top: 20px;">Guardar Configuración y Volver</button>
+    <button onclick="saveConfigAndReturn()" style="margin-top: 20px;">Guardar Config y Volver</button>
 </div>
 
 <!-- Modal para configurar porcentaje del vendedor -->
@@ -3117,7 +3377,7 @@ async function captureAndShareScreen() {
         console.error('Error al capturar pantalla:', error);
         alert('Error al generar la captura de pantalla. Intente nuevamente.');
     } finally {
-        button.textContent = '📸 Capturar y Compartir por WhatsApp';
+        button.textContent = 'Compartir por WhatsApp';
         button.classList.remove('capturing');
         button.disabled = false;
     }
@@ -3137,63 +3397,84 @@ function createScreenshotContainer() {
     const filterDate = document.getElementById('salesFilterDate').value || 'Todas';
     const currentTab = activeTab === 'tiempos' ? 'Tiempos (2 cifras)' : 'Billetes (4 cifras)';
 
-    const header = document.createElement('div');
-    header.className = 'screenshot-header';
-    header.innerHTML = `
-        <h2>REPORTE DE ${currentTab.toUpperCase()}</h2>
-        <div class="filters-info">
-            <div><strong>Lotería:</strong> ${filterLottery}</div>
-            <div><strong>Hora:</strong> ${filterTime}</div>
-            <div><strong>Fecha:</strong> ${filterDate}</div>
-            <div><strong>Generado:</strong> ${new Date().toLocaleString('es-ES')}</div>
-        </div>
-    `;
-    container.appendChild(header);
+const header = document.createElement('div');
+header.className = 'screenshot-header';
+header.innerHTML = `
+    <div class="filters-info-horizontal" style="
+        display: grid; 
+        grid-template-columns: 1fr 1fr; 
+        gap: 15px; 
+        font-size: 14px; 
+        font-weight: 600;
+        text-align: center;
+        padding: 8px 0;
+    ">
+        <div><strong>Lotería:</strong> ${filterLottery}</div>
+        <div><strong>Hora:</strong> ${filterTime}</div>
+        <div><strong>Fecha:</strong> ${filterDate}</div>
+        <div><strong>Generado:</strong> ${new Date().toLocaleString('es-ES', {
+    year: 'numeric',
+    month: '2-digit', 
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+}).replace(',', ' -')}</div>
+    </div>
+`;
+container.appendChild(header);
 
-    // Asegurar que el breakdown de porcentajes se incluya en la captura
-const summaryInContainer = container.querySelector('.sales-summary-box');
-if (summaryInContainer) {
-    addPercentageBreakdown(summaryInContainer, calculateSalesTotals(activeTab).totalColones);
-    // Remover el botón de configuración de la captura
-    const configButton = summaryInContainer.querySelector('.percentage-config-button');
+const summaryBox = document.getElementById('salesSummaryBox');
+if (summaryBox.style.display !== 'none') {
+    const summaryClone = summaryBox.cloneNode(true);
+    summaryClone.style.margin = '20px';
+    container.appendChild(summaryClone);
+
+    // AQUÍ es donde debes aplicar el breakdown al clone
+    addPercentageBreakdown(summaryClone, calculateSalesTotals(activeTab).totalColones);
+    
+    // Remover el botón de configuración del clone para la captura
+    const configButton = summaryClone.querySelector('.percentage-config-button');
     if (configButton) {
         configButton.remove();
     }
+    
+    // También remover cualquier otro botón que pueda estar en el resumen del clone
+    const allButtons = summaryClone.querySelectorAll('button');
+    allButtons.forEach(button => {
+        if (button.textContent.includes('Configurar') || button.textContent.includes('Config')) {
+            button.remove();
+        }
+    });
 }
 
-    const summaryBox = document.getElementById('salesSummaryBox');
-    if (summaryBox.style.display !== 'none') {
-        const summaryClone = summaryBox.cloneNode(true);
-        summaryClone.style.margin = '20px';
-        container.appendChild(summaryClone);
-    }
+let gridToClone;
+if (activeTab === 'tiempos') {
+    gridToClone = document.getElementById('numberSalesGrid');
+} else {
+    gridToClone = document.getElementById('billetesSalesGrid');
+}
 
-    let gridToClone;
-    if (activeTab === 'tiempos') {
-        gridToClone = document.getElementById('numberSalesGrid');
-    } else {
-        gridToClone = document.getElementById('billetesSalesGrid');
-    }
+if (gridToClone) {
+    const gridClone = gridToClone.cloneNode(true);
+    gridClone.style.margin = '20px';
+    gridClone.style.fontSize = '14px';
+    container.appendChild(gridClone);
+}
 
-    if (gridToClone) {
-        const gridClone = gridToClone.cloneNode(true);
-        gridClone.style.margin = '20px';
-        gridClone.style.fontSize = '14px';
-        container.appendChild(gridClone);
-    }
+const footer = document.createElement('div');
+footer.style.textAlign = 'center';
+footer.style.padding = '20px';
+footer.style.fontSize = '12px';
+footer.style.color = '#666';
+footer.innerHTML = `
+    <div>Sistema de Lotería APM13</div>
+    <div>Reporte generado automáticamente</div>
+`;
+container.appendChild(footer);
 
-    const footer = document.createElement('div');
-    footer.style.textAlign = 'center';
-    footer.style.padding = '20px';
-    footer.style.fontSize = '12px';
-    footer.style.color = '#666';
-    footer.innerHTML = `
-        <div>Sistema de Lotería APM13</div>
-        <div>Reporte generado automáticamente</div>
-    `;
-    container.appendChild(footer);
-
-    return container;
+return container;
 }
 
 // Función para descargar imagen (fallback)
@@ -3209,7 +3490,7 @@ function downloadImage(base64, filename) {
 }
 
 // Variables para porcentajes
-let sellerPercentage = 15; // Porcentaje por defecto del vendedor
+let sellerPercentage = 13; // Porcentaje por defecto del vendedor
 
 // Inicializar porcentaje desde localStorage
 function initSellerPercentage() {
@@ -3246,7 +3527,7 @@ function addPercentageBreakdown(summaryBox, totalAmount) {
             </div>
             <div class="percentage-item admin">
                 <div class="percentage-value">$${adminAmount.toFixed(2)}</div>
-                <div class="percentage-label">Administrador (${(100 - sellerPercentage)}%)</div>
+                <div class="percentage-label">Admin (${(100 - sellerPercentage)}%)</div>
             </div>
         `;
 
