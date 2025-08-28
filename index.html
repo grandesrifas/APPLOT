@@ -2284,24 +2284,27 @@ function initApp() {
         }
     }
 
-    function showNumberSalesPage() {
-        document.getElementById('mainPage').style.display = 'none';
-        document.getElementById('salesPage').style.display = 'none';
-        document.getElementById('numberSalesPage').style.display = 'block';
-        document.getElementById('verifyWinnersPage').style.display = 'none';
+    // También modifica la función showNumberSalesPage para mostrar el resumen inmediatamente
+function showNumberSalesPage() {
+    document.getElementById('mainPage').style.display = 'none';
+    document.getElementById('salesPage').style.display = 'none';
+    document.getElementById('numberSalesPage').style.display = 'block';
+    document.getElementById('verifyWinnersPage').style.display = 'none';
 
-        // Establecer la fecha actual como valor por defecto si no hay fecha seleccionada
-        if (!document.getElementById('salesFilterDate').value) {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            document.getElementById('salesFilterDate').value = `${year}-${month}-${day}`;
-        }
-
-        updateNumberSalesTable(); // Actualizar la cuadrícula al mostrar la página
+    // Establecer la fecha actual como valor por defecto si no hay fecha seleccionada
+    if (!document.getElementById('salesFilterDate').value) {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        document.getElementById('salesFilterDate').value = `${year}-${month}-${day}`;
     }
 
+    // CAMBIO: Mostrar el resumen inmediatamente al cargar la página
+    displaySalesSummary(activeTab);
+    
+    updateNumberSalesTable(); // Actualizar la cuadrícula al mostrar la página
+}
     // Función para actualizar los tiempos de sorteo en los filtros
     function updateFilterDrawTimes() {
     const lotteryType = document.getElementById('filterLotteryType').value;
@@ -2331,85 +2334,88 @@ function initApp() {
 
 
 
-    // Actualizar la función de tiempos vendidos para mantener coherencia
-    function updateNumberSalesTable() {
-        const tickets = loadTickets();
-        const filterLottery = document.getElementById('filterLotteryType').value;
-        const filterTime = document.getElementById('filterDrawTimeSelect').value;
-        const filterDate = document.getElementById('salesFilterDate').value;
+    // Función modificada para tiempos vendidos
+function updateNumberSalesTable() {
+    const tickets = loadTickets();
+    const filterLottery = document.getElementById('filterLotteryType').value;
+    const filterTime = document.getElementById('filterDrawTimeSelect').value;
+    const filterDate = document.getElementById('salesFilterDate').value;
 
-        // Inicializar un objeto para contar los tiempos vendidos por número
-        const numberSales = {};
-        for (let i = 0; i <= 99; i++) {
-            const number = i.toString().padStart(2, '0'); // Formato 00, 01, ..., 99
-            numberSales[number] = 0; // Inicializar en 0 (número)
-        }
-
-        // Crear objetos Date para el rango del día seleccionado si hay un filtro de fecha
-        let selectedDateStart = null;
-        let selectedDateEnd = null;
-
-        if (filterDate) {
-            selectedDateStart = new Date(filterDate + 'T00:00:00');
-            selectedDateEnd = new Date(filterDate + 'T23:59:59');
-        }
-
-        // Filtrar y contar los tiempos vendidos
-        tickets.forEach(ticket => {
-            // Convertir la fecha del ticket a un objeto Date para comparación
-            const ticketDate = new Date(ticket.datetime);
-
-            // Verificar si pasa los filtros
-            let passesFilters = true;
-
-            // Filtro de lotería
-            if (filterLottery && ticket.lottery !== filterLottery) {
-                passesFilters = false;
-            }
-
-            // Filtro de hora de sorteo
-            if (filterTime && ticket.drawTime !== filterTime) {
-                passesFilters = false;
-            }
-
-            // Filtro de fecha - comparar objetos Date para incluir horas
-            if (filterDate && (ticketDate < selectedDateStart || ticketDate > selectedDateEnd)) {
-                passesFilters = false;
-            }
-
-            // Si pasa todos los filtros, contar los tiempos vendidos
-            if (passesFilters) {
-                ticket.numbers.forEach(num => {
-                    if (num.number.length === 2) { // Solo contar números de 2 cifras
-                        numberSales[num.number] += parseInt(num.pieces, 10);
-                    }
-                });
-            }
-        });
-
-        // Mostrar los resultados en la cuadrícula
-        const grid = document.getElementById('numberSalesGrid');
-        grid.innerHTML = '';
-
-        // Recorrer los números en orden numérico (00, 01, 02, ..., 99)
-        for (let i = 0; i <= 99; i++) {
-            const number = i.toString().padStart(2, '0'); // Formato 00, 01, ..., 99
-            const numberItem = document.createElement('div');
-            numberItem.className = 'number-item';
-
-            // Aplicar la clase "highlight" si el número tiene tiempos vendidos mayores a cero
-            if (numberSales[number] > 0) {
-                numberItem.classList.add('highlight');
-            }
-
-            numberItem.innerHTML = `
-                <span>${number}</span>
-                <span>${numberSales[number]}</span>
-            `;
-            grid.appendChild(numberItem);
-            displaySalesSummary('tiempos');
-        }
+    // Inicializar un objeto para contar los tiempos vendidos por número
+    const numberSales = {};
+    for (let i = 0; i <= 99; i++) {
+        const number = i.toString().padStart(2, '0'); // Formato 00, 01, ..., 99
+        numberSales[number] = 0; // Inicializar en 0 (número)
     }
+
+    // Crear objetos Date para el rango del día seleccionado si hay un filtro de fecha
+    let selectedDateStart = null;
+    let selectedDateEnd = null;
+
+    if (filterDate) {
+        selectedDateStart = new Date(filterDate + 'T00:00:00');
+        selectedDateEnd = new Date(filterDate + 'T23:59:59');
+    }
+
+    // Filtrar y contar los tiempos vendidos
+    tickets.forEach(ticket => {
+        // Convertir la fecha del ticket a un objeto Date para comparación
+        const ticketDate = new Date(ticket.datetime);
+
+        // Verificar si pasa los filtros
+        let passesFilters = true;
+
+        // Filtro de lotería
+        if (filterLottery && ticket.lottery !== filterLottery) {
+            passesFilters = false;
+        }
+
+        // Filtro de hora de sorteo
+        if (filterTime && ticket.drawTime !== filterTime) {
+            passesFilters = false;
+        }
+
+        // Filtro de fecha - comparar objetos Date para incluir horas
+        if (filterDate && (ticketDate < selectedDateStart || ticketDate > selectedDateEnd)) {
+            passesFilters = false;
+        }
+
+        // Si pasa todos los filtros, contar los tiempos vendidos
+        if (passesFilters) {
+            ticket.numbers.forEach(num => {
+                if (num.number.length === 2) { // Solo contar números de 2 cifras
+                    numberSales[num.number] += parseInt(num.pieces, 10);
+                }
+            });
+        }
+    });
+
+    // Mostrar los resultados en la cuadrícula
+    const grid = document.getElementById('numberSalesGrid');
+    grid.innerHTML = '';
+
+    // Recorrer los números en orden numérico (00, 01, 02, ..., 99)
+    for (let i = 0; i <= 99; i++) {
+        const number = i.toString().padStart(2, '0'); // Formato 00, 01, ..., 99
+        const numberItem = document.createElement('div');
+        numberItem.className = 'number-item';
+
+        // Aplicar la clase "highlight" si el número tiene tiempos vendidos mayores a cero
+        if (numberSales[number] > 0) {
+            numberItem.classList.add('highlight');
+        }
+
+        numberItem.innerHTML = `
+            <span>${number}</span>
+            <span>${numberSales[number]}</span>
+        `;
+        grid.appendChild(numberItem);
+    }
+    
+    // CAMBIO: Siempre mostrar el resumen, sin condición
+    displaySalesSummary('tiempos');
+}
+
 
     function deleteSalesByDate() {
     const selectedDate = document.getElementById('salesDate').value;
@@ -2941,88 +2947,92 @@ function initApp() {
         applyFilters();
     }
 
-    function updateBilletesSalesTable() {
-        const tickets = loadTickets();
-        const filterLottery = document.getElementById('filterLotteryType').value;
-        const filterTime = document.getElementById('filterDrawTimeSelect').value;
-        const filterDate = document.getElementById('salesFilterDate').value;
+    // Función modificada para billetes vendidos
+function updateBilletesSalesTable() {
+    const tickets = loadTickets();
+    const filterLottery = document.getElementById('filterLotteryType').value;
+    const filterTime = document.getElementById('filterDrawTimeSelect').value;
+    const filterDate = document.getElementById('salesFilterDate').value;
 
-        // Inicializar un objeto para contar los tiempos vendidos por billete
-        const billetesSales = {};
+    // Inicializar un objeto para contar los tiempos vendidos por billete
+    const billetesSales = {};
 
-        // Crear objetos Date para el rango del día seleccionado si hay un filtro de fecha
-        let selectedDateStart = null;
-        let selectedDateEnd = null;
+    // Crear objetos Date para el rango del día seleccionado si hay un filtro de fecha
+    let selectedDateStart = null;
+    let selectedDateEnd = null;
 
-        if (filterDate) {
-            selectedDateStart = new Date(filterDate + 'T00:00:00');
-            selectedDateEnd = new Date(filterDate + 'T23:59:59');
+    if (filterDate) {
+        selectedDateStart = new Date(filterDate + 'T00:00:00');
+        selectedDateEnd = new Date(filterDate + 'T23:59:59');
+    }
+
+    // Filtrar y contar los billetes vendidos
+    tickets.forEach(ticket => {
+        // Convertir la fecha del ticket a un objeto Date para comparación
+        const ticketDate = new Date(ticket.datetime);
+
+        // Verificar si pasa los filtros
+        let passesFilters = true;
+
+        // Filtro de lotería
+        if (filterLottery && ticket.lottery !== filterLottery) {
+            passesFilters = false;
         }
 
-        // Filtrar y contar los billetes vendidos
-        tickets.forEach(ticket => {
-            // Convertir la fecha del ticket a un objeto Date para comparación
-            const ticketDate = new Date(ticket.datetime);
+        // Filtro de hora de sorteo
+        if (filterTime && ticket.drawTime !== filterTime) {
+            passesFilters = false;
+        }
 
-            // Verificar si pasa los filtros
-            let passesFilters = true;
+        // Filtro de fecha - comparar objetos Date para incluir horas
+        if (filterDate && (ticketDate < selectedDateStart || ticketDate > selectedDateEnd)) {
+            passesFilters = false;
+        }
 
-            // Filtro de lotería
-            if (filterLottery && ticket.lottery !== filterLottery) {
-                passesFilters = false;
-            }
-
-            // Filtro de hora de sorteo
-            if (filterTime && ticket.drawTime !== filterTime) {
-                passesFilters = false;
-            }
-
-            // Filtro de fecha - comparar objetos Date para incluir horas
-            if (filterDate && (ticketDate < selectedDateStart || ticketDate > selectedDateEnd)) {
-                passesFilters = false;
-            }
-
-            // Si pasa todos los filtros, contar los billetes vendidos
-            if (passesFilters) {
-                ticket.numbers.forEach(num => {
-                    if (num.number.length === 4) { // Solo contar números de 4 cifras (billetes)
-                        if (!billetesSales[num.number]) {
-                            billetesSales[num.number] = 0;
-                        }
-                        billetesSales[num.number] += parseInt(num.pieces, 10);
+        // Si pasa todos los filtros, contar los billetes vendidos
+        if (passesFilters) {
+            ticket.numbers.forEach(num => {
+                if (num.number.length === 4) { // Solo contar números de 4 cifras (billetes)
+                    if (!billetesSales[num.number]) {
+                        billetesSales[num.number] = 0;
                     }
-                });
-            }
-        });
+                    billetesSales[num.number] += parseInt(num.pieces, 10);
+                }
+            });
+        }
+    });
 
-        // Mostrar los resultados en la cuadrícula
-        const grid = document.getElementById('billetesSalesGrid');
-        grid.innerHTML = '';
+    // Mostrar los resultados en la cuadrícula
+    const grid = document.getElementById('billetesSalesGrid');
+    grid.innerHTML = '';
 
-        // Ordenar los billetes por número para mostrarlos organizados
-        const sortedBilletes = Object.keys(billetesSales).sort();
+    // Ordenar los billetes por número para mostrarlos organizados
+    const sortedBilletes = Object.keys(billetesSales).sort();
 
-       // Verificar si no hay billetes para mostrar
-if (sortedBilletes.length === 0) {
-    grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 20px;">No hay billetes vendidos con los filtros seleccionados</div>';
-    displaySalesSummary('billetes'); // ← AGREGAR ESTA LÍNEA
-    return;
-}
-
-        // Recorrer los billetes y mostrarlos en la cuadrícula
-        sortedBilletes.forEach(billete => {
-            if (billetesSales[billete] > 0) {
-                const billeteItem = document.createElement('div');
-                billeteItem.className = 'billete-item highlight';
-                billeteItem.innerHTML = `
-                    <span>${billete}</span>
-                    <span>${billetesSales[billete]}</span>
-                `;
-                grid.appendChild(billeteItem);
-                displaySalesSummary('billetes');
-            }
-        });
+    // Verificar si no hay billetes para mostrar
+    if (sortedBilletes.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 20px;">No hay billetes vendidos con los filtros seleccionados</div>';
+        // CAMBIO: Siempre mostrar el resumen, incluso sin billetes
+        displaySalesSummary('billetes');
+        return;
     }
+
+    // Recorrer los billetes y mostrarlos en la cuadrícula
+    sortedBilletes.forEach(billete => {
+        if (billetesSales[billete] > 0) {
+            const billeteItem = document.createElement('div');
+            billeteItem.className = 'billete-item highlight';
+            billeteItem.innerHTML = `
+                <span>${billete}</span>
+                <span>${billetesSales[billete]}</span>
+            `;
+            grid.appendChild(billeteItem);
+        }
+    });
+    
+    // CAMBIO: Siempre mostrar el resumen
+    displaySalesSummary('billetes');
+}
 
 
     function iniciarEscaner() {
@@ -3584,29 +3594,25 @@ function calculateSalesTotals(type) {
 }
 
 // Función para mostrar resumen de totales
-// Función para mostrar resumen de totales con porcentajes
 function displaySalesSummary(type) {
     const totals = calculateSalesTotals(type);
     const summaryBox = document.getElementById('salesSummaryBox');
 
-    if (totals.totalTiempos > 0) {
-        summaryBox.style.display = 'block';
+    // CAMBIO PRINCIPAL: Siempre mostrar el resumen, incluso con totales en 0
+    summaryBox.style.display = 'block';
 
-        const totalTiemposDisplay = totals.totalTiempos % 1 !== 0 ?
-            totals.totalTiempos.toFixed(1) :
-            totals.totalTiempos.toString();
+    const totalTiemposDisplay = totals.totalTiempos % 1 !== 0 ?
+        totals.totalTiempos.toFixed(1) :
+        totals.totalTiempos.toString();
 
-        document.getElementById('totalTiempos').textContent = totalTiemposDisplay;
-        document.getElementById('totalColones').textContent = '$' + totals.totalColones.toFixed(2);
+    document.getElementById('totalTiempos').textContent = totalTiemposDisplay;
+    document.getElementById('totalColones').textContent = '$' + totals.totalColones.toFixed(2);
 
-        const title = type === 'tiempos' ? 'Resumen' : 'Resumen';
-        summaryBox.querySelector('h3').textContent = title;
+    const title = type === 'tiempos' ? 'Resumen de Chances' : 'Resumen de Billetes';
+    summaryBox.querySelector('h3').textContent = title;
 
-        // Agregar breakdown de porcentajes
-        addPercentageBreakdown(summaryBox, totals.totalColones);
-    } else {
-        summaryBox.style.display = 'none';
-    }
+    // Agregar breakdown de porcentajes (incluso si es $0.00)
+    addPercentageBreakdown(summaryBox, totals.totalColones);
 }
 
 // Función para capturar y compartir la pantalla
@@ -3761,7 +3767,7 @@ function downloadImage(base64, filename) {
 
 // Variables para porcentajes y nombre del vendedor
 let sellerPercentage = 13; // Porcentaje por defecto del vendedor
-let sellerName = "NO ASIGNADO"; // Nombre por defecto del vendedor
+let sellerName = "Vendedor"; // Nombre por defecto del vendedor
 
 // Inicializar porcentaje y nombre desde localStorage
 function initSellerPercentage() {
@@ -3776,7 +3782,8 @@ function initSellerPercentage() {
     }
 }
 
-// Agregar breakdown de porcentajes al resumen
+// Función modificada para agregar breakdown de porcentajes al resumen
+// Función corregida para mostrar el nombre del vendedor
 function addPercentageBreakdown(summaryBox, totalAmount) {
     // Remover breakdown previo si existe
     const existingBreakdown = summaryBox.querySelector('.percentage-breakdown');
@@ -3790,32 +3797,31 @@ function addPercentageBreakdown(summaryBox, totalAmount) {
         existingButton.remove();
     }
 
-    if (totalAmount > 0) {
-        const sellerAmount = (totalAmount * sellerPercentage) / 100;
-        const adminAmount = totalAmount - sellerAmount;
+    // Calcular y mostrar porcentajes siempre, incluso si totalAmount es 0
+    const sellerAmount = (totalAmount * sellerPercentage) / 100;
+    const adminAmount = totalAmount - sellerAmount;
 
-        const breakdown = document.createElement('div');
-        breakdown.className = 'percentage-breakdown';
-        breakdown.innerHTML = `
-            <div class="percentage-item seller">
-                <div class="percentage-value">$${sellerAmount.toFixed(2)}</div>
-                <div class="percentage-label">${sellerName} (${sellerPercentage}%)</div>
-            </div>
-            <div class="percentage-item admin">
-                <div class="percentage-value">$${adminAmount.toFixed(2)}</div>
-                <div class="percentage-label">Admin (${(100 - sellerPercentage)}%)</div>
-            </div>
-        `;
+    const breakdown = document.createElement('div');
+    breakdown.className = 'percentage-breakdown';
+    breakdown.innerHTML = `
+        <div class="percentage-item seller">
+            <div class="percentage-value">$${sellerAmount.toFixed(2)}</div>
+            <div class="percentage-label">${sellerName} (${sellerPercentage}%)</div>
+        </div>
+        <div class="percentage-item admin">
+            <div class="percentage-value">$${adminAmount.toFixed(2)}</div>
+            <div class="percentage-label">Admin (${(100 - sellerPercentage)}%)</div>
+        </div>
+    `;
 
-        summaryBox.appendChild(breakdown);
+    summaryBox.appendChild(breakdown);
 
-        // Agregar botón de configuración
-        const configButton = document.createElement('button');
-        configButton.className = 'percentage-config-button';
-        configButton.textContent = 'Configurar Vendedor';
-        configButton.onclick = openPercentageModal;
-        summaryBox.appendChild(configButton);
-    }
+    // Agregar botón de configuración SIEMPRE, sin condición
+    const configButton = document.createElement('button');
+    configButton.className = 'percentage-config-button';
+    configButton.textContent = 'Configurar Vendedor';
+    configButton.onclick = openPercentageModal;
+    summaryBox.appendChild(configButton);
 }
 
 // Abrir modal de configuración de porcentaje
@@ -4188,6 +4194,3 @@ window.onclick = function(event) {
 </script>
 </body>
 </html>
-
-
-
