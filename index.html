@@ -1805,20 +1805,20 @@
     }
 
     const lotteryTimes = {
-    PANAMA: ['3:00 PM'],
-    NICA: ['12:00 PM', '4:00 PM', '7:00 PM', '10:00 PM'],
-    MONAZO: ['1:55 PM', '5:30 PM', '8:30 PM'],
-    LAPRIMERA: ['11:00 AM', '7:00 PM'],
-    TICA: ['8:30 PM'],
-    NEWYORK: ['1:30 PM', '9:30 PM'],
-    // Reventado usa los mismos horarios que la lotería base
-    REVENTADO_PANAMA: ['3:00 PM'],
-    REVENTADO_NICA: ['12:00 PM', '4:00 PM', '7:00 PM', '10:00 PM'],
-    REVENTADO_MONAZO: ['1:55 PM', '5:30 PM', '8:30 PM'],
-    REVENTADO_LAPRIMERA: ['11:00 AM', '7:00 PM'],
-    REVENTADO_TICA: ['8:30 PM'],
-    REVENTADO_NEWYORK: ['1:30 PM', '9:30 PM']
-};
+        PANAMA: ['3:00 PM'],
+        NICA: ['12:00 PM', '4:00 PM', '7:00 PM', '10:00 PM'],
+        MONAZO: ['1:55 PM', '5:30 PM', '8:30 PM'],
+        LAPRIMERA: ['11:00 AM', '7:00 PM'],
+        TICA: ['8:30 PM'],
+        NEWYORK: ['1:30 PM', '9:30 PM'],
+        // Reventado usa los mismos horarios que la lotería base
+        REVENTADO_PANAMA: ['3:00 PM'],
+        REVENTADO_NICA: ['12:00 PM', '4:00 PM', '7:00 PM', '10:00 PM'],
+        REVENTADO_MONAZO: ['1:55 PM', '5:30 PM', '8:30 PM'],
+        REVENTADO_LAPRIMERA: ['11:00 AM', '7:00 PM'],
+        REVENTADO_TICA: ['8:30 PM'],
+        REVENTADO_NEWYORK: ['1:30 PM', '9:30 PM']
+    };
 
     // Funciones auxiliares para manejar el Reventado
     function isReventado(lotteryType) {
@@ -1863,25 +1863,25 @@
     }
 
     function updateDrawTimes() {
-    const lotteryType = document.getElementById('lotteryType').value;
-    const timeSelect = document.getElementById('drawTimeSelect');
-    timeSelect.innerHTML = '<option value="">Seleccione hora de sorteo</option>';
+        const lotteryType = document.getElementById('lotteryType').value;
+        const timeSelect = document.getElementById('drawTimeSelect');
+        timeSelect.innerHTML = '<option value="">Seleccione hora de sorteo</option>';
 
-    const baseLottery = getBaseLottery(lotteryType);
+        const baseLottery = getBaseLottery(lotteryType);
 
-    if (lotteryType && baseLottery !== 'PANAMA' && lotteryType !== 'REVENTADO_PANAMA') {
-        timeSelect.disabled = false;
-        lotteryTimes[lotteryType].forEach(time => {
-            timeSelect.innerHTML += `<option value="${time}">${time}</option>`;
-        });
-    } else if (lotteryType === 'PANAMA' || lotteryType === 'REVENTADO_PANAMA') {
-        // Para PANAMA y REVENTADO_PANAMA, establecer 3:00 PM por defecto
-        timeSelect.disabled = false;
-        timeSelect.innerHTML = '<option value="3:00 PM" selected>3:00 PM</option>';
-    } else {
-        timeSelect.disabled = true;
+        if (lotteryType && baseLottery !== 'PANAMA' && lotteryType !== 'REVENTADO_PANAMA') {
+            timeSelect.disabled = false;
+            lotteryTimes[lotteryType].forEach(time => {
+                timeSelect.innerHTML += `<option value="${time}">${time}</option>`;
+            });
+        } else if (lotteryType === 'PANAMA' || lotteryType === 'REVENTADO_PANAMA') {
+            // Para PANAMA y REVENTADO_PANAMA, establecer 3:00 PM por defecto
+            timeSelect.disabled = false;
+            timeSelect.innerHTML = '<option value="3:00 PM" selected>3:00 PM</option>';
+        } else {
+            timeSelect.disabled = true;
+        }
     }
-}
 
     function validateNumber(number) {
         const numStr = number.toString();
@@ -2086,7 +2086,7 @@
             }
         }
 
-        
+
 
         // Agregar logs para depuración
         console.log("Generando ticket con los siguientes datos:", {
@@ -2450,17 +2450,17 @@
         }
     }
 
-function applyFilters() {
-    if (activeTab === 'tiempos') {
-        updateNumberSalesTable();
-        // Cargar números ganadores para los nuevos filtros
-        setTimeout(() => {
-            loadAndDisplayWinningNumbers();
-        }, 100);
-    } else {
-        updateBilletesSalesTable();
+    function applyFilters() {
+        if (activeTab === 'tiempos') {
+            updateNumberSalesTable();
+            // Cargar números ganadores para los nuevos filtros
+            setTimeout(() => {
+                loadAndDisplayWinningNumbers();
+            }, 100);
+        } else {
+            updateBilletesSalesTable();
+        }
     }
-}
 
 
     // Función modificada para tiempos vendidos
@@ -3066,27 +3066,27 @@ function applyFilters() {
     let activeTab = 'tiempos';
 
     // Función para cambiar entre las pestañas de tiempos y billetes
-   function switchTab(tabName) {
-    activeTab = tabName;
+    function switchTab(tabName) {
+        activeTab = tabName;
 
-    // Actualizar estilos de las pestañas
-    document.getElementById('tiemposTab').classList.toggle('active', tabName === 'tiempos');
-    document.getElementById('billetesTab').classList.toggle('active', tabName === 'billetes');
+        // Actualizar estilos de las pestañas
+        document.getElementById('tiemposTab').classList.toggle('active', tabName === 'tiempos');
+        document.getElementById('billetesTab').classList.toggle('active', tabName === 'billetes');
 
-    // Mostrar/ocultar los contenedores correspondientes
-    document.getElementById('tiemposContainer').style.display = tabName === 'tiempos' ? 'block' : 'none';
-    document.getElementById('billetesContainer').style.display = tabName === 'billetes' ? 'block' : 'none';
+        // Mostrar/ocultar los contenedores correspondientes
+        document.getElementById('tiemposContainer').style.display = tabName === 'tiempos' ? 'block' : 'none';
+        document.getElementById('billetesContainer').style.display = tabName === 'billetes' ? 'block' : 'none';
 
-    // Actualizar la visualización
-    applyFilters();
-    
-    // Mostrar u ocultar sección de números ganadores según la pestaña
-    if (tabName === 'tiempos') {
-        showWinningNumbersSection();
-    } else {
-        hideWinningNumbersSection();
+        // Actualizar la visualización
+        applyFilters();
+
+        // Mostrar u ocultar sección de números ganadores según la pestaña
+        if (tabName === 'tiempos') {
+            showWinningNumbersSection();
+        } else {
+            hideWinningNumbersSection();
+        }
     }
-}
 
     // Función modificada para billetes vendidos
     function updateBilletesSalesTable() {
@@ -3645,49 +3645,49 @@ function applyFilters() {
         return true;
     }
 
-   function validarHorarioVenta() {
-    const lotteryType = document.getElementById('lotteryType').value;
-    const drawTime = document.getElementById('drawTimeSelect').value;
+    function validarHorarioVenta() {
+        const lotteryType = document.getElementById('lotteryType').value;
+        const drawTime = document.getElementById('drawTimeSelect').value;
 
-    // Si no hay hora de sorteo seleccionada, no permitir
-    if (!drawTime) return false;
+        // Si no hay hora de sorteo seleccionada, no permitir
+        if (!drawTime) return false;
 
-    const ahora = new Date();
-    const horaActual = ahora.getHours();
-    const minutoActual = ahora.getMinutes();
+        const ahora = new Date();
+        const horaActual = ahora.getHours();
+        const minutoActual = ahora.getMinutes();
 
-    // Convertir hora del sorteo (ej: "3:00 PM" -> 15:00)
-    let [tiempo, periodo] = drawTime.split(' ');
-    let [hora, minutos] = tiempo.split(':').map(Number);
+        // Convertir hora del sorteo (ej: "3:00 PM" -> 15:00)
+        let [tiempo, periodo] = drawTime.split(' ');
+        let [hora, minutos] = tiempo.split(':').map(Number);
 
-    // Convertir a formato 24 horas
-    if (periodo === 'PM' && hora !== 12) {
-        hora += 12;
-    } else if (periodo === 'AM' && hora === 12) {
-        hora = 0;
+        // Convertir a formato 24 horas
+        if (periodo === 'PM' && hora !== 12) {
+            hora += 12;
+        } else if (periodo === 'AM' && hora === 12) {
+            hora = 0;
+        }
+
+        // Calcular tiempo actual y tiempo de sorteo en minutos
+        const horaSorteoEnMinutos = hora * 60 + minutos;
+        const horaActualEnMinutos = horaActual * 60 + minutoActual;
+
+        // Calcular diferencia (positiva = sorteo en el futuro, negativa = sorteo ya pasó)
+        const diferencia = horaSorteoEnMinutos - horaActualEnMinutos;
+
+        // Si faltan 5 minutos o menos para el sorteo, no permitir venta
+        if (diferencia <= 5 && diferencia >= 0) {
+            return false;
+        }
+
+        // Si el sorteo ya pasó, permitir solo después de 20 minutos
+        if (diferencia < 0) {
+            const minutosPasados = Math.abs(diferencia);
+            return minutosPasados > 20;
+        }
+
+        // Si faltan más de 5 minutos, permitir venta
+        return true;
     }
-
-    // Calcular tiempo actual y tiempo de sorteo en minutos
-    const horaSorteoEnMinutos = hora * 60 + minutos;
-    const horaActualEnMinutos = horaActual * 60 + minutoActual;
-    
-    // Calcular diferencia (positiva = sorteo en el futuro, negativa = sorteo ya pasó)
-    const diferencia = horaSorteoEnMinutos - horaActualEnMinutos;
-
-    // Si faltan 5 minutos o menos para el sorteo, no permitir venta
-    if (diferencia <= 5 && diferencia >= 0) {
-        return false;
-    }
-
-    // Si el sorteo ya pasó, permitir solo después de 20 minutos
-    if (diferencia < 0) {
-        const minutosPasados = Math.abs(diferencia);
-        return minutosPasados > 20;
-    }
-
-    // Si faltan más de 5 minutos, permitir venta
-    return true;
-}
     // Establecer límite global para billetes (4 cifras)
     function setGlobalBilletesLimit() {
         const lottery = document.getElementById('limitBilleteLotteryType').value;
@@ -3777,79 +3777,85 @@ function applyFilters() {
         return { totalTiempos, totalColones };
     }
 
-   function displaySalesSummary(type) {
-    const totals = calculateSalesTotals(type);
-    const summaryBox = document.getElementById('salesSummaryBox');
+    function displaySalesSummary(type) {
+        const totals = calculateSalesTotals(type);
+        const summaryBox = document.getElementById('salesSummaryBox');
 
-    summaryBox.style.display = 'block';
+        summaryBox.style.display = 'block';
 
-    const totalTiemposDisplay = totals.totalTiempos % 1 !== 0 ?
-        totals.totalTiempos.toFixed(1) :
-        totals.totalTiempos.toString();
+        const totalTiemposDisplay = totals.totalTiempos % 1 !== 0 ?
+            totals.totalTiempos.toFixed(1) :
+            totals.totalTiempos.toString();
 
-    document.getElementById('totalTiempos').textContent = totalTiemposDisplay;
-    document.getElementById('totalColones').textContent = '$' + totals.totalColones.toFixed(2);
+        document.getElementById('totalTiempos').textContent = totalTiemposDisplay;
+        document.getElementById('totalColones').textContent = '$' + totals.totalColones.toFixed(2);
 
-    const title = type === 'tiempos' ? 'Resumen de Chances' : 'Resumen de Billetes';
-    summaryBox.querySelector('h3').textContent = title;
+        const title = type === 'tiempos' ? 'Resumen de Chances' : 'Resumen de Billetes';
+        summaryBox.querySelector('h3').textContent = title;
 
-    addPercentageBreakdown(summaryBox, totals.totalColones);
-    
-    // Solo mostrar números ganadores para tiempos, pero fuera de la tarjeta
-    if (type === 'tiempos') {
-        showWinningNumbersSection();
-    } else {
-        hideWinningNumbersSection();
-    }
-}
+        addPercentageBreakdown(summaryBox, totals.totalColones);
 
-// Función para mostrar sección de números ganadores independiente
-function showWinningNumbersSection() {
-    let winningSection = document.getElementById('independentWinningSection');
-    
-    if (!winningSection) {
-        winningSection = document.createElement('div');
-        winningSection.id = 'independentWinningSection';
-        winningSection.className = 'winning-numbers-independent';
-        
-        const screenshotButton = document.getElementById('screenshotButton');
-        if (screenshotButton) {
-            screenshotButton.parentNode.insertBefore(winningSection, screenshotButton);
+        // Solo mostrar números ganadores para tiempos, pero fuera de la tarjeta
+        if (type === 'tiempos') {
+            showWinningNumbersSection();
         } else {
-            const tiemposContainer = document.getElementById('tiemposContainer');
-            if (tiemposContainer) {
-                tiemposContainer.appendChild(winningSection);
-            }
+            hideWinningNumbersSection();
         }
     }
 
-    // Verificar si la lotería seleccionada es REVENTADO
-    const filterLottery = document.getElementById('filterLotteryType').value;
-    const isReventadoLottery = filterLottery && filterLottery.startsWith('REVENTADO_');
+    // Función para mostrar sección de números ganadores independiente
+    function showWinningNumbersSection() {
+        let winningSection = document.getElementById('independentWinningSection');
 
-    if (isReventadoLottery) {
-        // Interfaz para loterías REVENTADO
-        winningSection.innerHTML = `
-            <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <h4 style="margin: 0 0 15px 0; color: #333;">Número Ganador - ${getDisplayName(filterLottery)}</h4>
-                <div style="display: flex; justify-content: center; margin-bottom: 15px;">
-                    <div style="text-align: center;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #666;">Número Ganador</label>
-                        <input type="text" id="reventadoPrizeInput" maxlength="2" 
-                               style="width: 80px; padding: 12px; text-align: center; font-size: 18px; border: 2px solid #dc3545; border-radius: 4px;" 
-                               placeholder="00" inputmode="numeric" pattern="[0-9]*">
-                    </div>
+        if (!winningSection) {
+            winningSection = document.createElement('div');
+            winningSection.id = 'independentWinningSection';
+            winningSection.className = 'winning-numbers-independent';
+
+            const screenshotButton = document.getElementById('screenshotButton');
+            if (screenshotButton) {
+                screenshotButton.parentNode.insertBefore(winningSection, screenshotButton);
+            } else {
+                const tiemposContainer = document.getElementById('tiemposContainer');
+                if (tiemposContainer) {
+                    tiemposContainer.appendChild(winningSection);
+                }
+            }
+        }
+
+// Verificar si la lotería seleccionada es REVENTADO
+const filterLottery = document.getElementById('filterLotteryType').value;
+const isReventadoLottery = filterLottery && filterLottery.startsWith('REVENTADO_');
+
+if (isReventadoLottery) {
+    // Interfaz para loterías REVENTADO
+    winningSection.innerHTML = `
+        <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h4 style="margin: 0 0 15px 0; color: #333;">Número Ganador - ${getDisplayName(filterLottery)}</h4>
+            <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+                <div style="text-align: center;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #666;">Número Ganador</label>
+                    <input type="text" id="reventadoPrizeInput" maxlength="2" 
+                           style="width: 80px; padding: 12px; text-align: center; font-size: 18px; border: 2px solid #dc3545; border-radius: 4px;" 
+                           placeholder="00" inputmode="numeric" pattern="[0-9]*">
                 </div>
-                <button onclick="calculateReventadoWinnings()" 
-                        style="width: 100%; padding: 12px; background-color: #dc3545; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
-                    Calcular Ganancias REVENTADO
-                </button>
-                <div id="reventadoWinningsResult" style="margin-top: 20px;"></div>
             </div>
-        `;
-    } else {
-        // Interfaz normal para loterías regulares
-        winningSection.innerHTML = `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button onclick="clearReventadoPrizeInput()" 
+                        style="padding: 10px; background-color: #6c757d; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;">
+                    Limpiar
+                </button>
+                <button onclick="calculateReventadoWinnings()" 
+                        style="padding: 10px; background-color: #dc3545; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;">
+                    Calcular REVENTADO
+                </button>
+            </div>
+            <div id="reventadoWinningsResult" style="margin-top: 20px;"></div>
+        </div>
+    `;
+        } else {
+            // Interfaz normal para loterías regulares
+            winningSection.innerHTML = `
             <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                 <h4 style="margin: 0 0 15px 0; color: #333;">Números Ganadores</h4>
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px;">
@@ -3872,147 +3878,153 @@ function showWinningNumbersSection() {
                                placeholder="00" inputmode="numeric" pattern="[0-9]*">
                     </div>
                 </div>
-                <button onclick="calculateWinnings()" 
-                        style="width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
-                    Calcular Ganancias
-                </button>
+               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+    <button onclick="clearPrizeInputs()" 
+            style="padding: 10px; background-color: #dc3545; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;">
+        Limpiar Premios
+    </button>
+    <button onclick="calculateWinnings()" 
+            style="padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;">
+        Calcular Ganancias
+    </button>
+</div>
                 <div id="winningsResult" style="margin-top: 20px;"></div>
             </div>
         `;
-    }
-
-    addNumericInputEvents();
-    
-    setTimeout(() => {
-        loadAndDisplayWinningNumbers();
-    }, 100);
-    
-    winningSection.style.display = 'block';
-}
-
-// Función para ocultar la sección
-function hideWinningNumbersSection() {
-    const winningSection = document.getElementById('independentWinningSection');
-    if (winningSection) {
-        winningSection.style.display = 'none';
-    }
-}
-
-// Función para agregar eventos de teclado numérico a los inputs
-// Función para agregar eventos de teclado numérico a los inputs
-function addNumericInputEvents() {
-    const inputs = ['firstPrizeInput', 'secondPrizeInput', 'thirdPrizeInput'];
-    
-    inputs.forEach(inputId => {
-        const input = document.getElementById(inputId);
-        if (input) {
-            // Permitir solo números
-            input.addEventListener('input', function(e) {
-                // Remover todo lo que no sea número
-                let value = this.value.replace(/[^0-9]/g, '');
-                
-                // Limitar a 2 dígitos máximo
-                if (value.length > 2) {
-                    value = value.slice(0, 2);
-                }
-                
-                this.value = value;
-            });
-
-            // Prevenir entrada de caracteres no numéricos
-            input.addEventListener('keypress', function(e) {
-                if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-                    e.preventDefault();
-                }
-            });
-
-            // Solo formatear con cero al inicio cuando pierda el foco Y tenga un solo dígito
-            input.addEventListener('blur', function() {
-                if (this.value.length === 1) {
-                    this.value = '0' + this.value;
-                }
-                // No hacer nada si está vacío o ya tiene 2 dígitos
-            });
-
-            // Seleccionar todo el texto al hacer foco
-            input.addEventListener('focus', function() {
-                this.select();
-            });
         }
-    });
-}
 
-// Función para generar clave única para los números ganadores
-function getWinningNumbersKey() {
-    const filterLottery = document.getElementById('filterLotteryType').value || 'ALL';
-    const filterTime = document.getElementById('filterDrawTimeSelect').value || 'ALL';
-    const filterDate = document.getElementById('salesFilterDate').value || 'ALL';
-    
-    return `winningNumbers_${filterLottery}_${filterTime}_${filterDate}`;
-}
+        addNumericInputEvents();
 
-// Función para guardar números ganadores
-function saveWinningNumbers(firstPrize, secondPrize, thirdPrize, winningsData) {
-    const key = getWinningNumbersKey();
-    const data = {
-        firstPrize: firstPrize,
-        secondPrize: secondPrize,
-        thirdPrize: thirdPrize,
-        winningsData: winningsData,
-        timestamp: new Date().toISOString()
-    };
-    
-    localStorage.setItem(key, JSON.stringify(data));
-}
+        setTimeout(() => {
+            loadAndDisplayWinningNumbers();
+        }, 100);
 
-// Función para cargar números ganadores
-function loadWinningNumbers() {
-    const key = getWinningNumbersKey();
-    const savedData = localStorage.getItem(key);
-    
-    if (savedData) {
-        try {
-            return JSON.parse(savedData);
-        } catch (error) {
-            console.error('Error al cargar números ganadores:', error);
-            return null;
+        winningSection.style.display = 'block';
+    }
+
+    // Función para ocultar la sección
+    function hideWinningNumbersSection() {
+        const winningSection = document.getElementById('independentWinningSection');
+        if (winningSection) {
+            winningSection.style.display = 'none';
         }
     }
-    
-    return null;
-}
 
-// Función para cargar números ganadores en los inputs y mostrar resultado
-function loadAndDisplayWinningNumbers() {
-    const filterLottery = document.getElementById('filterLotteryType').value;
-    const isReventadoLottery = filterLottery && filterLottery.startsWith('REVENTADO_');
-    
-    if (isReventadoLottery) {
-        loadReventadoWinnings();
-    } else {
-        const savedData = loadWinningNumbers();
-        
+    // Función para agregar eventos de teclado numérico a los inputs
+    // Función para agregar eventos de teclado numérico a los inputs
+    function addNumericInputEvents() {
+        const inputs = ['firstPrizeInput', 'secondPrizeInput', 'thirdPrizeInput'];
+
+        inputs.forEach(inputId => {
+            const input = document.getElementById(inputId);
+            if (input) {
+                // Permitir solo números
+                input.addEventListener('input', function (e) {
+                    // Remover todo lo que no sea número
+                    let value = this.value.replace(/[^0-9]/g, '');
+
+                    // Limitar a 2 dígitos máximo
+                    if (value.length > 2) {
+                        value = value.slice(0, 2);
+                    }
+
+                    this.value = value;
+                });
+
+                // Prevenir entrada de caracteres no numéricos
+                input.addEventListener('keypress', function (e) {
+                    if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                        e.preventDefault();
+                    }
+                });
+
+                // Solo formatear con cero al inicio cuando pierda el foco Y tenga un solo dígito
+                input.addEventListener('blur', function () {
+                    if (this.value.length === 1) {
+                        this.value = '0' + this.value;
+                    }
+                    // No hacer nada si está vacío o ya tiene 2 dígitos
+                });
+
+                // Seleccionar todo el texto al hacer foco
+                input.addEventListener('focus', function () {
+                    this.select();
+                });
+            }
+        });
+    }
+
+    // Función para generar clave única para los números ganadores
+    function getWinningNumbersKey() {
+        const filterLottery = document.getElementById('filterLotteryType').value || 'ALL';
+        const filterTime = document.getElementById('filterDrawTimeSelect').value || 'ALL';
+        const filterDate = document.getElementById('salesFilterDate').value || 'ALL';
+
+        return `winningNumbers_${filterLottery}_${filterTime}_${filterDate}`;
+    }
+
+    // Función para guardar números ganadores
+    function saveWinningNumbers(firstPrize, secondPrize, thirdPrize, winningsData) {
+        const key = getWinningNumbersKey();
+        const data = {
+            firstPrize: firstPrize,
+            secondPrize: secondPrize,
+            thirdPrize: thirdPrize,
+            winningsData: winningsData,
+            timestamp: new Date().toISOString()
+        };
+
+        localStorage.setItem(key, JSON.stringify(data));
+    }
+
+    // Función para cargar números ganadores
+    function loadWinningNumbers() {
+        const key = getWinningNumbersKey();
+        const savedData = localStorage.getItem(key);
+
         if (savedData) {
-            document.getElementById('firstPrizeInput').value = savedData.firstPrize;
-            document.getElementById('secondPrizeInput').value = savedData.secondPrize;
-            document.getElementById('thirdPrizeInput').value = savedData.thirdPrize;
-            document.getElementById('winningsResult').innerHTML = savedData.winningsData;
-            showNotification('Números ganadores cargados automáticamente', 'info', 2000);
+            try {
+                return JSON.parse(savedData);
+            } catch (error) {
+                console.error('Error al cargar números ganadores:', error);
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    // Función para cargar números ganadores en los inputs y mostrar resultado
+    function loadAndDisplayWinningNumbers() {
+        const filterLottery = document.getElementById('filterLotteryType').value;
+        const isReventadoLottery = filterLottery && filterLottery.startsWith('REVENTADO_');
+
+        if (isReventadoLottery) {
+            loadReventadoWinnings();
+        } else {
+            const savedData = loadWinningNumbers();
+
+            if (savedData) {
+                document.getElementById('firstPrizeInput').value = savedData.firstPrize;
+                document.getElementById('secondPrizeInput').value = savedData.secondPrize;
+                document.getElementById('thirdPrizeInput').value = savedData.thirdPrize;
+                document.getElementById('winningsResult').innerHTML = savedData.winningsData;
+                showNotification('Números ganadores cargados automáticamente', 'info', 2000);
+            }
         }
     }
-}
 
-// Función para agregar sección de números ganadores
-function addWinningNumbersSection(summaryBox, totalColones) {
-    // Remover sección previa si existe
-    const existingSection = summaryBox.querySelector('.winning-numbers-section');
-    if (existingSection) {
-        existingSection.remove();
-    }
+    // Función para agregar sección de números ganadores
+    function addWinningNumbersSection(summaryBox, totalColones) {
+        // Remover sección previa si existe
+        const existingSection = summaryBox.querySelector('.winning-numbers-section');
+        if (existingSection) {
+            existingSection.remove();
+        }
 
-    const winningSection = document.createElement('div');
-    winningSection.className = 'winning-numbers-section';
-    winningSection.innerHTML = `
+        const winningSection = document.createElement('div');
+        winningSection.className = 'winning-numbers-section';
+        winningSection.innerHTML = `
         <div style="border-top: 1px solid #ddd; padding-top: 15px; margin-top: 15px;">
             <h4 style="margin-bottom: 10px;">Números Ganadores</h4>
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
@@ -4036,192 +4048,188 @@ function addWinningNumbersSection(summaryBox, totalColones) {
         </div>
     `;
 
-    // Insertar antes del breakdown de porcentajes
-    const percentageBreakdown = summaryBox.querySelector('.percentage-breakdown');
-    if (percentageBreakdown) {
-        summaryBox.insertBefore(winningSection, percentageBreakdown);
-    } else {
-        summaryBox.appendChild(winningSection);
-    }
-}
-
-// Función para calcular ganancias de números ganadores
-// Función para calcular ganancias de números ganadores
-function calculateWinnings() {
-    const firstPrize = document.getElementById('firstPrizeInput').value.padStart(2, '0');
-    const secondPrize = document.getElementById('secondPrizeInput').value.padStart(2, '0');
-    const thirdPrize = document.getElementById('thirdPrizeInput').value.padStart(2, '0');
-
-    if (!firstPrize || !secondPrize || !thirdPrize) {
-        showNotification('Por favor complete todos los números ganadores', 'warning');
-        return;
-    }
-
-    // Validar que los números sean diferentes
-    if (firstPrize === secondPrize || firstPrize === thirdPrize || secondPrize === thirdPrize) {
-        showNotification('Los números ganadores deben ser diferentes', 'warning');
-        return;
-    }
-
-    // Obtener datos filtrados actuales
-    const tickets = loadTickets();
-    const filterLottery = document.getElementById('filterLotteryType').value;
-    const filterTime = document.getElementById('filterDrawTimeSelect').value;
-    const filterDate = document.getElementById('salesFilterDate').value;
-
-    // Objeto para contar tiempos vendidos
-    const numberSales = {};
-
-    // Aplicar mismos filtros que en updateNumberSalesTable()
-    let selectedDateStart = null;
-    let selectedDateEnd = null;
-
-    if (filterDate) {
-        selectedDateStart = new Date(filterDate + 'T00:00:00');
-        selectedDateEnd = new Date(filterDate + 'T23:59:59');
-    }
-
-    tickets.forEach(ticket => {
-        const ticketDate = new Date(ticket.datetime);
-        let passesFilters = true;
-
-        if (filterLottery && ticket.lottery !== filterLottery) passesFilters = false;
-        if (filterTime && ticket.drawTime !== filterTime) passesFilters = false;
-        if (filterDate && (ticketDate < selectedDateStart || ticketDate > selectedDateEnd)) passesFilters = false;
-
-        if (passesFilters) {
-            ticket.numbers.forEach(num => {
-                if (num.number.length === 2) {
-                    if (!numberSales[num.number]) {
-                        numberSales[num.number] = 0;
-                    }
-                    numberSales[num.number] += parseInt(num.pieces, 10);
-                }
-            });
+        // Insertar antes del breakdown de porcentajes
+        const percentageBreakdown = summaryBox.querySelector('.percentage-breakdown');
+        if (percentageBreakdown) {
+            summaryBox.insertBefore(winningSection, percentageBreakdown);
+        } else {
+            summaryBox.appendChild(winningSection);
         }
-    });
-
-    // Calcular premios
-    const winners = [];
-    let totalPrizes = 0;
-
-    if (numberSales[firstPrize]) {
-        const amount = numberSales[firstPrize] * 14;
-        winners.push({ number: firstPrize, times: numberSales[firstPrize], prize: '1er Premio', amount: amount });
-        totalPrizes += amount;
     }
 
-    if (numberSales[secondPrize]) {
-        const amount = numberSales[secondPrize] * 3;
-        winners.push({ number: secondPrize, times: numberSales[secondPrize], prize: '2do Premio', amount: amount });
-        totalPrizes += amount;
-    }
+    // Función para calcular ganancias de números ganadores
+    // Función para calcular ganancias de números ganadores
+    function calculateWinnings() {
+        const firstPrize = document.getElementById('firstPrizeInput').value.padStart(2, '0');
+        const secondPrize = document.getElementById('secondPrizeInput').value.padStart(2, '0');
+        const thirdPrize = document.getElementById('thirdPrizeInput').value.padStart(2, '0');
 
-    if (numberSales[thirdPrize]) {
-        const amount = numberSales[thirdPrize] * 2;
-        winners.push({ number: thirdPrize, times: numberSales[thirdPrize], prize: '3er Premio', amount: amount });
-        totalPrizes += amount;
-    }
-
-    // Obtener monto del administrador
-    const totals = calculateSalesTotals('tiempos');
-    const adminAmount = (totals.totalColones * (100 - sellerPercentage)) / 100;
-    const netResult = adminAmount - totalPrizes;
-
-    // Mostrar resultados
-    const winningsHTML = generateWinningsHTML(winners, totalPrizes, adminAmount, netResult);
-    document.getElementById('winningsResult').innerHTML = winningsHTML;
-
-    // Guardar datos
-    saveWinningNumbers(firstPrize, secondPrize, thirdPrize, winningsHTML);
-    
-    showNotification('Ganancias calculadas y guardadas', 'success');
-}
-
-// Función para calcular ganancias de lotería REVENTADO
-function calculateReventadoWinnings() {
-    const reventadoPrize = document.getElementById('reventadoPrizeInput').value.padStart(2, '0');
-
-    if (!reventadoPrize) {
-        showNotification('Por favor complete el número ganador', 'warning');
-        return;
-    }
-
-    // Obtener datos filtrados actuales
-    const tickets = loadTickets();
-    const filterLottery = document.getElementById('filterLotteryType').value;
-    const filterTime = document.getElementById('filterDrawTimeSelect').value;
-    const filterDate = document.getElementById('salesFilterDate').value;
-
-    // Objeto para contar tiempos vendidos
-    const numberSales = {};
-
-    // Aplicar mismos filtros
-    let selectedDateStart = null;
-    let selectedDateEnd = null;
-
-    if (filterDate) {
-        selectedDateStart = new Date(filterDate + 'T00:00:00');
-        selectedDateEnd = new Date(filterDate + 'T23:59:59');
-    }
-
-    tickets.forEach(ticket => {
-        const ticketDate = new Date(ticket.datetime);
-        let passesFilters = true;
-
-        if (filterLottery && ticket.lottery !== filterLottery) passesFilters = false;
-        if (filterTime && ticket.drawTime !== filterTime) passesFilters = false;
-        if (filterDate && (ticketDate < selectedDateStart || ticketDate > selectedDateEnd)) passesFilters = false;
-
-        if (passesFilters) {
-            ticket.numbers.forEach(num => {
-                if (num.number.length === 2) {
-                    if (!numberSales[num.number]) {
-                        numberSales[num.number] = 0;
-                    }
-                    numberSales[num.number] += parseInt(num.pieces, 10);
-                }
-            });
+        if (!firstPrize || !secondPrize || !thirdPrize) {
+            showNotification('Por favor complete todos los números ganadores', 'warning');
+            return;
         }
-    });
 
-    // Calcular premio REVENTADO (cada 5 tiempos paga $90)
-    let totalPrizes = 0;
-    let winningTimes = 0;
-    let paymentBlocks = 0;
 
-    if (numberSales[reventadoPrize]) {
-        winningTimes = numberSales[reventadoPrize];
-        paymentBlocks = Math.floor(winningTimes / 5);
-        totalPrizes = paymentBlocks * 90;
+
+        // Obtener datos filtrados actuales
+        const tickets = loadTickets();
+        const filterLottery = document.getElementById('filterLotteryType').value;
+        const filterTime = document.getElementById('filterDrawTimeSelect').value;
+        const filterDate = document.getElementById('salesFilterDate').value;
+
+        // Objeto para contar tiempos vendidos
+        const numberSales = {};
+
+        // Aplicar mismos filtros que en updateNumberSalesTable()
+        let selectedDateStart = null;
+        let selectedDateEnd = null;
+
+        if (filterDate) {
+            selectedDateStart = new Date(filterDate + 'T00:00:00');
+            selectedDateEnd = new Date(filterDate + 'T23:59:59');
+        }
+
+        tickets.forEach(ticket => {
+            const ticketDate = new Date(ticket.datetime);
+            let passesFilters = true;
+
+            if (filterLottery && ticket.lottery !== filterLottery) passesFilters = false;
+            if (filterTime && ticket.drawTime !== filterTime) passesFilters = false;
+            if (filterDate && (ticketDate < selectedDateStart || ticketDate > selectedDateEnd)) passesFilters = false;
+
+            if (passesFilters) {
+                ticket.numbers.forEach(num => {
+                    if (num.number.length === 2) {
+                        if (!numberSales[num.number]) {
+                            numberSales[num.number] = 0;
+                        }
+                        numberSales[num.number] += parseInt(num.pieces, 10);
+                    }
+                });
+            }
+        });
+
+        // Calcular premios
+        const winners = [];
+        let totalPrizes = 0;
+
+        if (numberSales[firstPrize]) {
+            const amount = numberSales[firstPrize] * 14;
+            winners.push({ number: firstPrize, times: numberSales[firstPrize], prize: '1er Premio', amount: amount });
+            totalPrizes += amount;
+        }
+
+        if (numberSales[secondPrize]) {
+            const amount = numberSales[secondPrize] * 3;
+            winners.push({ number: secondPrize, times: numberSales[secondPrize], prize: '2do Premio', amount: amount });
+            totalPrizes += amount;
+        }
+
+        if (numberSales[thirdPrize]) {
+            const amount = numberSales[thirdPrize] * 2;
+            winners.push({ number: thirdPrize, times: numberSales[thirdPrize], prize: '3er Premio', amount: amount });
+            totalPrizes += amount;
+        }
+
+        // Obtener monto del administrador
+        const totals = calculateSalesTotals('tiempos');
+        const adminAmount = (totals.totalColones * (100 - sellerPercentage)) / 100;
+        const netResult = adminAmount - totalPrizes;
+
+        // Mostrar resultados
+        const winningsHTML = generateWinningsHTML(winners, totalPrizes, adminAmount, netResult);
+        document.getElementById('winningsResult').innerHTML = winningsHTML;
+
+        // Guardar datos
+        saveWinningNumbers(firstPrize, secondPrize, thirdPrize, winningsHTML);
+
+        showNotification('Ganancias calculadas y guardadas', 'success');
     }
 
-    // Obtener monto del administrador
-    const totals = calculateSalesTotals('tiempos');
-    const adminAmount = (totals.totalColones * (100 - sellerPercentage)) / 100;
-    const netResult = adminAmount - totalPrizes;
+    // Función para calcular ganancias de lotería REVENTADO
+    function calculateReventadoWinnings() {
+        const reventadoPrize = document.getElementById('reventadoPrizeInput').value.padStart(2, '0');
 
-    // Mostrar resultados
-    const reventadoHTML = generateReventadoHTML(reventadoPrize, winningTimes, paymentBlocks, totalPrizes, adminAmount, netResult);
-    document.getElementById('reventadoWinningsResult').innerHTML = reventadoHTML;
+        if (!reventadoPrize) {
+            showNotification('Por favor complete el número ganador', 'warning');
+            return;
+        }
 
-    // Guardar datos REVENTADO
-    saveReventadoWinnings(reventadoPrize, reventadoHTML);
-    
-    showNotification('Ganancias REVENTADO calculadas y guardadas', 'success');
-}
+        // Obtener datos filtrados actuales
+        const tickets = loadTickets();
+        const filterLottery = document.getElementById('filterLotteryType').value;
+        const filterTime = document.getElementById('filterDrawTimeSelect').value;
+        const filterDate = document.getElementById('salesFilterDate').value;
 
-// Función para generar HTML de resultados REVENTADO
-function generateReventadoHTML(number, winningTimes, paymentBlocks, totalPrizes, adminAmount, netResult) {
-    if (winningTimes === 0) {
-        return `
+        // Objeto para contar tiempos vendidos
+        const numberSales = {};
+
+        // Aplicar mismos filtros
+        let selectedDateStart = null;
+        let selectedDateEnd = null;
+
+        if (filterDate) {
+            selectedDateStart = new Date(filterDate + 'T00:00:00');
+            selectedDateEnd = new Date(filterDate + 'T23:59:59');
+        }
+
+        tickets.forEach(ticket => {
+            const ticketDate = new Date(ticket.datetime);
+            let passesFilters = true;
+
+            if (filterLottery && ticket.lottery !== filterLottery) passesFilters = false;
+            if (filterTime && ticket.drawTime !== filterTime) passesFilters = false;
+            if (filterDate && (ticketDate < selectedDateStart || ticketDate > selectedDateEnd)) passesFilters = false;
+
+            if (passesFilters) {
+                ticket.numbers.forEach(num => {
+                    if (num.number.length === 2) {
+                        if (!numberSales[num.number]) {
+                            numberSales[num.number] = 0;
+                        }
+                        numberSales[num.number] += parseInt(num.pieces, 10);
+                    }
+                });
+            }
+        });
+
+        // Calcular premio REVENTADO (cada 5 tiempos paga $90)
+        let totalPrizes = 0;
+        let winningTimes = 0;
+        let paymentBlocks = 0;
+
+        if (numberSales[reventadoPrize]) {
+            winningTimes = numberSales[reventadoPrize];
+            paymentBlocks = Math.floor(winningTimes / 5);
+            totalPrizes = paymentBlocks * 90;
+        }
+
+        // Obtener monto del administrador
+        const totals = calculateSalesTotals('tiempos');
+        const adminAmount = (totals.totalColones * (100 - sellerPercentage)) / 100;
+        const netResult = adminAmount - totalPrizes;
+
+        // Mostrar resultados
+        const reventadoHTML = generateReventadoHTML(reventadoPrize, winningTimes, paymentBlocks, totalPrizes, adminAmount, netResult);
+        document.getElementById('reventadoWinningsResult').innerHTML = reventadoHTML;
+
+        // Guardar datos REVENTADO
+        saveReventadoWinnings(reventadoPrize, reventadoHTML);
+
+        showNotification('Ganancias REVENTADO calculadas y guardadas', 'success');
+    }
+
+    // Función para generar HTML de resultados REVENTADO
+    function generateReventadoHTML(number, winningTimes, paymentBlocks, totalPrizes, adminAmount, netResult) {
+        if (winningTimes === 0) {
+            return `
             <div style="text-align: center; color: #28a745; font-weight: bold;">
                 ¡El número ${number} no tiene tiempos vendidos! Ganancia total: $${adminAmount.toFixed(2)}
             </div>
         `;
-    }
+        }
 
-    let html = `
+        let html = `
         <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
             <h5 style="margin: 0 0 10px 0; color: #dc3545;">Resultado REVENTADO - Número ${number}</h5>
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
@@ -4240,49 +4248,49 @@ function generateReventadoHTML(number, winningTimes, paymentBlocks, totalPrizes,
         </div>
     `;
 
-    return html;
-}
+        return html;
+    }
 
-// Función para guardar números ganadores REVENTADO
-function saveReventadoWinnings(number, winningsData) {
-    const key = getWinningNumbersKey() + '_REVENTADO';
-    const data = {
-        reventadoPrize: number,
-        winningsData: winningsData,
-        timestamp: new Date().toISOString()
-    };
-    
-    localStorage.setItem(key, JSON.stringify(data));
-}
+    // Función para guardar números ganadores REVENTADO
+    function saveReventadoWinnings(number, winningsData) {
+        const key = getWinningNumbersKey() + '_REVENTADO';
+        const data = {
+            reventadoPrize: number,
+            winningsData: winningsData,
+            timestamp: new Date().toISOString()
+        };
 
-// Función para cargar números ganadores REVENTADO
-function loadReventadoWinnings() {
-    const key = getWinningNumbersKey() + '_REVENTADO';
-    const savedData = localStorage.getItem(key);
-    
-    if (savedData) {
-        try {
-            const data = JSON.parse(savedData);
-            document.getElementById('reventadoPrizeInput').value = data.reventadoPrize;
-            document.getElementById('reventadoWinningsResult').innerHTML = data.winningsData;
-            showNotification('Número ganador REVENTADO cargado automáticamente', 'info', 2000);
-        } catch (error) {
-            console.error('Error al cargar datos REVENTADO:', error);
+        localStorage.setItem(key, JSON.stringify(data));
+    }
+
+    // Función para cargar números ganadores REVENTADO
+    function loadReventadoWinnings() {
+        const key = getWinningNumbersKey() + '_REVENTADO';
+        const savedData = localStorage.getItem(key);
+
+        if (savedData) {
+            try {
+                const data = JSON.parse(savedData);
+                document.getElementById('reventadoPrizeInput').value = data.reventadoPrize;
+                document.getElementById('reventadoWinningsResult').innerHTML = data.winningsData;
+                showNotification('Número ganador REVENTADO cargado automáticamente', 'info', 2000);
+            } catch (error) {
+                console.error('Error al cargar datos REVENTADO:', error);
+            }
         }
     }
-}
 
-// Función para generar HTML de resultados (separada para reutilizar)
-function generateWinningsHTML(winners, totalPrizes, adminAmount, netResult) {
-    if (winners.length === 0) {
-        return `
+    // Función para generar HTML de resultados (separada para reutilizar)
+    function generateWinningsHTML(winners, totalPrizes, adminAmount, netResult) {
+        if (winners.length === 0) {
+            return `
             <div style="text-align: center; color: #28a745; font-weight: bold;">
                 ¡No hay números ganadores! Ganancia total: $${adminAmount.toFixed(2)}
             </div>
         `;
-    }
+        }
 
-    let html = `
+        let html = `
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
             <thead>
                 <tr style="background-color: #f8f9fa;">
@@ -4295,8 +4303,8 @@ function generateWinningsHTML(winners, totalPrizes, adminAmount, netResult) {
             <tbody>
     `;
 
-    winners.forEach(winner => {
-        html += `
+        winners.forEach(winner => {
+            html += `
             <tr>
                 <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${winner.number}</td>
                 <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${winner.prize}</td>
@@ -4304,9 +4312,9 @@ function generateWinningsHTML(winners, totalPrizes, adminAmount, netResult) {
                 <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">$${winner.amount.toFixed(2)}</td>
             </tr>
         `;
-    });
+        });
 
-    html += `
+        html += `
             </tbody>
         </table>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-weight: bold;">
@@ -4318,23 +4326,23 @@ function generateWinningsHTML(winners, totalPrizes, adminAmount, netResult) {
         </div>
     `;
 
-    return html;
-}
+        return html;
+    }
 
-// Función para mostrar resultados de ganancias
-function displayWinningsResults(winners, totalPrizes, adminAmount, netResult) {
-    const resultDiv = document.getElementById('winningsResult');
-    
-    if (winners.length === 0) {
-        resultDiv.innerHTML = `
+    // Función para mostrar resultados de ganancias
+    function displayWinningsResults(winners, totalPrizes, adminAmount, netResult) {
+        const resultDiv = document.getElementById('winningsResult');
+
+        if (winners.length === 0) {
+            resultDiv.innerHTML = `
             <div style="text-align: center; color: #28a745; font-weight: bold;">
                 ¡No hay números ganadores! Ganancia total: $${adminAmount.toFixed(2)}
             </div>
         `;
-        return;
-    }
+            return;
+        }
 
-    let html = `
+        let html = `
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
             <thead>
                 <tr style="background-color: #f8f9fa;">
@@ -4347,8 +4355,8 @@ function displayWinningsResults(winners, totalPrizes, adminAmount, netResult) {
             <tbody>
     `;
 
-    winners.forEach(winner => {
-        html += `
+        winners.forEach(winner => {
+            html += `
             <tr>
                 <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${winner.number}</td>
                 <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${winner.prize}</td>
@@ -4356,9 +4364,9 @@ function displayWinningsResults(winners, totalPrizes, adminAmount, netResult) {
                 <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">$${winner.amount.toFixed(2)}</td>
             </tr>
         `;
-    });
+        });
 
-    html += `
+        html += `
             </tbody>
         </table>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-weight: bold;">
@@ -4370,25 +4378,25 @@ function displayWinningsResults(winners, totalPrizes, adminAmount, netResult) {
         </div>
     `;
 
-    resultDiv.innerHTML = html;
-}
+        resultDiv.innerHTML = html;
+    }
 
-   // Función para crear el contenedor de captura
-function createScreenshotContainer() {
-    const container = document.createElement('div');
-    container.className = 'screenshot-container';
-    container.style.position = 'absolute';
-    container.style.left = '-9999px';
-    container.style.width = '800px';
-    container.style.fontFamily = 'Arial, sans-serif';
+    // Función para crear el contenedor de captura
+    function createScreenshotContainer() {
+        const container = document.createElement('div');
+        container.className = 'screenshot-container';
+        container.style.position = 'absolute';
+        container.style.left = '-9999px';
+        container.style.width = '800px';
+        container.style.fontFamily = 'Arial, sans-serif';
 
-    const filterLottery = document.getElementById('filterLotteryType').value || 'Todas';
-    const filterTime = document.getElementById('filterDrawTimeSelect').value || 'Todas las Horas';
-    const filterDate = document.getElementById('salesFilterDate').value || 'Todas';
+        const filterLottery = document.getElementById('filterLotteryType').value || 'Todas';
+        const filterTime = document.getElementById('filterDrawTimeSelect').value || 'Todas las Horas';
+        const filterDate = document.getElementById('salesFilterDate').value || 'Todas';
 
-    const header = document.createElement('div');
-    header.className = 'screenshot-header';
-    header.innerHTML = `
+        const header = document.createElement('div');
+        header.className = 'screenshot-header';
+        header.innerHTML = `
         <div class="filters-info-horizontal" style="
             display: grid; 
             grid-template-columns: 1fr 1fr; 
@@ -4405,75 +4413,94 @@ function createScreenshotContainer() {
         </div>
         <div style="text-align: center; padding-top: 5px; font-size: 12px;">
             <strong>Generado:</strong> ${new Date().toLocaleString('es-ES', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false
-            }).replace(',', ' -')}
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }).replace(',', ' -')}
         </div>
     `;
-    container.appendChild(header);
+        container.appendChild(header);
 
-    // Clonar resumen de ventas
-    const summaryBox = document.getElementById('salesSummaryBox');
-    if (summaryBox && summaryBox.style.display !== 'none') {
-        const summaryClone = summaryBox.cloneNode(true);
-        summaryClone.style.margin = '20px';
-        container.appendChild(summaryClone);
+        // Clonar resumen de ventas
+        const summaryBox = document.getElementById('salesSummaryBox');
+        if (summaryBox && summaryBox.style.display !== 'none') {
+            const summaryClone = summaryBox.cloneNode(true);
+            summaryClone.style.margin = '20px';
+            container.appendChild(summaryClone);
 
-        addPercentageBreakdown(summaryClone, calculateSalesTotals(activeTab).totalColones);
-        
-        // Remover el botón de configuración del clone
-        const configButton = summaryClone.querySelector('.percentage-config-button');
-        if (configButton) {
-            configButton.remove();
-        }
-    }
+            addPercentageBreakdown(summaryClone, calculateSalesTotals(activeTab).totalColones);
 
-    // Clonar grilla de números
-    let gridToClone;
-    if (activeTab === 'tiempos') {
-        gridToClone = document.getElementById('numberSalesGrid');
-    } else {
-        gridToClone = document.getElementById('billetesSalesGrid');
-    }
-
-    if (gridToClone) {
-        const gridClone = gridToClone.cloneNode(true);
-        gridClone.style.margin = '20px';
-        gridClone.style.fontSize = '14px';
-        container.appendChild(gridClone);
-    }
-
-    // NUEVO: Agregar sección de números ganadores si existe y es pestaña tiempos
-    if (activeTab === 'tiempos') {
-        const winningSection = document.getElementById('independentWinningSection');
-        if (winningSection && winningSection.style.display !== 'none') {
-            const winningClone = winningSection.cloneNode(true);
-            winningClone.style.margin = '20px';
-            
-            // Remover el botón de calcular del clone
-            const calculateButton = winningClone.querySelector('button[onclick="calculateWinnings()"]');
-            if (calculateButton) {
-                calculateButton.remove();
+            // Remover el botón de configuración del clone
+            const configButton = summaryClone.querySelector('.percentage-config-button');
+            if (configButton) {
+                configButton.remove();
             }
-            
-            // Remover los inputs y dejar solo los resultados si existen
-            const inputs = winningClone.querySelectorAll('input');
+        }
+
+        // Clonar grilla de números
+        let gridToClone;
+        if (activeTab === 'tiempos') {
+            gridToClone = document.getElementById('numberSalesGrid');
+        } else {
+            gridToClone = document.getElementById('billetesSalesGrid');
+        }
+
+        if (gridToClone) {
+            const gridClone = gridToClone.cloneNode(true);
+            gridClone.style.margin = '20px';
+            gridClone.style.fontSize = '14px';
+            container.appendChild(gridClone);
+        }
+
+        // NUEVO: Agregar sección de números ganadores si existe y es pestaña tiempos
+        // NUEVO: Agregar sección de números ganadores si existe y es pestaña tiempos
+if (activeTab === 'tiempos') {
+    const winningSection = document.getElementById('independentWinningSection');
+    if (winningSection && winningSection.style.display !== 'none') {
+        const winningClone = winningSection.cloneNode(true);
+        winningClone.style.margin = '20px';
+
+        // Remover todos los botones del clone
+        const buttons = winningClone.querySelectorAll('button');
+        buttons.forEach(button => button.remove());
+
+        // Verificar si es lotería REVENTADO
+        const filterLottery = document.getElementById('filterLotteryType').value;
+        const isReventadoLottery = filterLottery && filterLottery.startsWith('REVENTADO_');
+
+        if (isReventadoLottery) {
+            // Manejo para REVENTADO
+            const reventadoResult = winningClone.querySelector('#reventadoWinningsResult');
+            const reventadoPrize = document.getElementById('reventadoPrizeInput').value;
+
+            if (reventadoResult && reventadoResult.innerHTML.trim() !== '' && reventadoPrize) {
+                // Reemplazar input con texto para REVENTADO
+                const inputContainer = winningClone.querySelector('div[style*="display: flex"]');
+                if (inputContainer) {
+                    inputContainer.innerHTML = `
+                        <div style="text-align: center;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #666;">Número Ganador</label>
+                            <div style="font-size: 24px; font-weight: bold; color: #dc3545; padding: 10px; border: 2px solid #dc3545; border-radius: 4px; width: 80px; margin: 0 auto;">${reventadoPrize}</div>
+                        </div>
+                    `;
+                }
+                container.appendChild(winningClone);
+            }
+        } else {
+            // Manejo para loterías normales
             const winningsResult = winningClone.querySelector('#winningsResult');
-            
             if (winningsResult && winningsResult.innerHTML.trim() !== '') {
-                // Si hay resultados, mostrar solo los números ganadores como texto
                 const firstPrize = document.getElementById('firstPrizeInput').value;
                 const secondPrize = document.getElementById('secondPrizeInput').value;
                 const thirdPrize = document.getElementById('thirdPrizeInput').value;
-                
+
                 if (firstPrize && secondPrize && thirdPrize) {
-                    // Reemplazar inputs con texto
-                    const inputContainer = winningClone.querySelector('div[style*="grid-template-columns"]');
+                    // Reemplazar inputs con texto para loterías normales
+                    const inputContainer = winningClone.querySelector('div[style*="grid-template-columns: repeat(3, 1fr)"]');
                     if (inputContainer) {
                         inputContainer.innerHTML = `
                             <div style="text-align: center;">
@@ -4490,67 +4517,67 @@ function createScreenshotContainer() {
                             </div>
                         `;
                     }
-                    
                     container.appendChild(winningClone);
                 }
             }
         }
     }
+}
 
-    const footer = document.createElement('div');
-    footer.style.textAlign = 'center';
-    footer.style.padding = '20px';
-    footer.style.fontSize = '12px';
-    footer.style.color = '#666';
-    footer.innerHTML = `
+        const footer = document.createElement('div');
+        footer.style.textAlign = 'center';
+        footer.style.padding = '20px';
+        footer.style.fontSize = '12px';
+        footer.style.color = '#666';
+        footer.innerHTML = `
         <div>Sistema de Lotería APM13</div>
         <div>Reporte generado automáticamente</div>
     `;
-    container.appendChild(footer);
+        container.appendChild(footer);
 
-    return container;
-}
-
-// Función para capturar y compartir la pantalla
-async function captureAndShareScreen() {
-    const button = document.getElementById('screenshotButton');
-
-    try {
-        button.textContent = '📸 Capturando...';
-        button.classList.add('capturing');
-        button.disabled = true;
-
-        const captureContainer = createScreenshotContainer();
-        document.body.appendChild(captureContainer);
-
-        const canvas = await html2canvas(captureContainer, {
-            scale: 2,
-            backgroundColor: '#ffffff',
-            logging: false,
-            width: 800,
-            height: captureContainer.scrollHeight,
-            useCORS: true,
-            allowTaint: true
-        });
-
-        document.body.removeChild(captureContainer);
-        const base64 = canvas.toDataURL('image/png', 0.9);
-
-        if (typeof Android !== 'undefined' && Android.shareImageFromAndroid) {
-            Android.shareImageFromAndroid(base64, 'Reporte de Tiempos Vendidos');
-        } else {
-            downloadImage(base64, 'tiempos-vendidos.png');
-        }
-
-    } catch (error) {
-        console.error('Error al capturar pantalla:', error);
-        showNotification('Error al generar la captura de pantalla. Intente nuevamente.');
-    } finally {
-        button.textContent = 'Compartir por WhatsApp';
-        button.classList.remove('capturing');
-        button.disabled = false;
+        return container;
     }
-}
+
+    // Función para capturar y compartir la pantalla
+    async function captureAndShareScreen() {
+        const button = document.getElementById('screenshotButton');
+
+        try {
+            button.textContent = '📸 Capturando...';
+            button.classList.add('capturing');
+            button.disabled = true;
+
+            const captureContainer = createScreenshotContainer();
+            document.body.appendChild(captureContainer);
+
+            const canvas = await html2canvas(captureContainer, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false,
+                width: 800,
+                height: captureContainer.scrollHeight,
+                useCORS: true,
+                allowTaint: true
+            });
+
+            document.body.removeChild(captureContainer);
+            const base64 = canvas.toDataURL('image/png', 0.9);
+
+            if (typeof Android !== 'undefined' && Android.shareImageFromAndroid) {
+                Android.shareImageFromAndroid(base64, 'Reporte de Tiempos Vendidos');
+            } else {
+                downloadImage(base64, 'tiempos-vendidos.png');
+            }
+
+        } catch (error) {
+            console.error('Error al capturar pantalla:', error);
+            showNotification('Error al generar la captura de pantalla. Intente nuevamente.');
+        } finally {
+            button.textContent = 'Compartir por WhatsApp';
+            button.classList.remove('capturing');
+            button.disabled = false;
+        }
+    }
 
     // Función para descargar imagen (fallback)
     function downloadImage(base64, filename) {
@@ -4848,75 +4875,75 @@ async function captureAndShareScreen() {
         currentActiveInput.value = currentValue.slice(0, -1);
     }
 
-   function submitNumber() {
-    if (!currentActiveInput) return;
+    function submitNumber() {
+        if (!currentActiveInput) return;
 
-    const numberInput = document.getElementById('number');
-    const piecesInput = document.getElementById('pieces');
+        const numberInput = document.getElementById('number');
+        const piecesInput = document.getElementById('pieces');
 
-    if (currentActiveInput === numberInput) {
-        // Si estamos en el campo número, ir al campo tiempos
-        if (numberInput.value.trim()) {
-            showKeyboard(piecesInput);
-            piecesInput.focus();
-        } else {
-            showNotification('Por favor ingrese un número', 'warning');
-        }
-    } else if (currentActiveInput === piecesInput) {
-        // Si estamos en el campo tiempos y ambos campos están llenos, agregar número
-        if (numberInput.value.trim() && piecesInput.value.trim()) {
-            // Lógica de addNumber() integrada aquí
-            const number = numberInput.value;
-            const pieces = parseInt(piecesInput.value, 10);
-            const lotteryType = document.getElementById('lotteryType').value;
-
-            if (!validateNumber(number)) {
-                showNotification('El número debe tener 2 o 4 cifras', 'warning');
-                return;
+        if (currentActiveInput === numberInput) {
+            // Si estamos en el campo número, ir al campo tiempos
+            if (numberInput.value.trim()) {
+                showKeyboard(piecesInput);
+                piecesInput.focus();
+            } else {
+                showNotification('Por favor ingrese un número', 'warning');
             }
+        } else if (currentActiveInput === piecesInput) {
+            // Si estamos en el campo tiempos y ambos campos están llenos, agregar número
+            if (numberInput.value.trim() && piecesInput.value.trim()) {
+                // Lógica de addNumber() integrada aquí
+                const number = numberInput.value;
+                const pieces = parseInt(piecesInput.value, 10);
+                const lotteryType = document.getElementById('lotteryType').value;
 
-            if (!lotteryType) {
-                showNotification('Por favor seleccione una lotería', 'warning');
-                return;
-            }
-
-            if (lotteryType !== 'PANAMA' && lotteryType !== 'REVENTADO_PANAMA') {
-                const drawTime = document.getElementById('drawTimeSelect').value;
-                if (!drawTime) {
-                    showNotification('Por favor seleccione hora de sorteo', 'warning');
+                if (!validateNumber(number)) {
+                    showNotification('El número debe tener 2 o 4 cifras', 'warning');
                     return;
                 }
+
+                if (!lotteryType) {
+                    showNotification('Por favor seleccione una lotería', 'warning');
+                    return;
+                }
+
+                if (lotteryType !== 'PANAMA' && lotteryType !== 'REVENTADO_PANAMA') {
+                    const drawTime = document.getElementById('drawTimeSelect').value;
+                    if (!drawTime) {
+                        showNotification('Por favor seleccione hora de sorteo', 'warning');
+                        return;
+                    }
+                }
+
+                // Validar horario antes de verificar límites
+                if (!validarHorarioVenta()) {
+                    showNotification('No se pueden vender números. Ventas bloqueadas 5 minutos antes y 20 minutos después del sorteo.', 'warning');
+                    return; // ESTE RETURN FALTABA
+                }
+
+                if (!checkLimits(number, pieces)) {
+                    return;
+                }
+
+                const subTotal = calculatePrice(number, pieces, lotteryType);
+                numbers.push({ number, pieces, subTotal, lotteryType });
+
+                updateNumbersList();
+                updateTotal();
+                updateCurrentSales(number, pieces, true);
+
+                // Limpiar campos y volver al campo número
+                numberInput.value = '';
+                piecesInput.value = '';
+                showKeyboard(numberInput);
+                numberInput.focus();
+            } else if (!piecesInput.value.trim()) {
+                showNotification('Por favor ingrese la cantidad de tiempos', 'warning');
+            } else {
+                showNotification('Por favor complete el número', 'warning');
             }
-
-            // Validar horario antes de verificar límites
-            if (!validarHorarioVenta()) {
-                showNotification('No se pueden vender números. Ventas bloqueadas 5 minutos antes y 20 minutos después del sorteo.', 'warning');
-                return; // ESTE RETURN FALTABA
-            }
-
-            if (!checkLimits(number, pieces)) {
-                return;
-            }
-
-            const subTotal = calculatePrice(number, pieces, lotteryType);
-            numbers.push({ number, pieces, subTotal, lotteryType });
-
-            updateNumbersList();
-            updateTotal();
-            updateCurrentSales(number, pieces, true);
-
-            // Limpiar campos y volver al campo número
-            numberInput.value = '';
-            piecesInput.value = '';
-            showKeyboard(numberInput);
-            numberInput.focus();
-        } else if (!piecesInput.value.trim()) {
-            showNotification('Por favor ingrese la cantidad de tiempos', 'warning');
-        } else {
-            showNotification('Por favor complete el número', 'warning');
         }
     }
-}
 
     // Inicializar eventos del teclado numérico
     function initKeyboardEvents() {
@@ -4975,6 +5002,38 @@ async function captureAndShareScreen() {
             });
         });
     }
+
+    // Función para limpiar inputs de premios normales
+function clearPrizeInputs() {
+    document.getElementById('firstPrizeInput').value = '';
+    document.getElementById('secondPrizeInput').value = '';
+    document.getElementById('thirdPrizeInput').value = '';
+    document.getElementById('winningsResult').innerHTML = '';
+    
+    // Limpiar de localStorage
+    const filterLottery = document.getElementById('filterLotteryType').value;
+    const filterTime = document.getElementById('filterDrawTimeSelect').value;
+    const filterDate = document.getElementById('salesFilterDate').value;
+    const key = `winningNumbers_${filterLottery}_${filterTime}_${filterDate}`;
+    localStorage.removeItem(key);
+    
+    showNotification('Premios limpiados', 'success');
+}
+
+// Función para limpiar input de REVENTADO
+function clearReventadoPrizeInput() {
+    document.getElementById('reventadoPrizeInput').value = '';
+    document.getElementById('reventadoWinningsResult').innerHTML = '';
+    
+    // Limpiar de localStorage
+    const filterLottery = document.getElementById('filterLotteryType').value;
+    const filterTime = document.getElementById('filterDrawTimeSelect').value;
+    const filterDate = document.getElementById('salesFilterDate').value;
+    const key = `reventadoWinningNumber_${filterLottery}_${filterTime}_${filterDate}`;
+    localStorage.removeItem(key);
+    
+    showNotification('Premio limpiado', 'success');
+}
 
     // Cerrar modal al hacer clic fuera de él
     window.onclick = function (event) {
