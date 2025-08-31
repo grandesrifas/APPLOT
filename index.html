@@ -2209,8 +2209,9 @@
 </div>
 `;
 
-        const qrDiv = document.getElementById('qrcode');
-        new QRCode(qrDiv, {
+ const qrDiv = document.getElementById('qrcode');
+qrDiv.innerHTML = '';
+new QRCode(qrDiv, {
             text: ticket.id,
             width: 100,
             height: 100,
@@ -5055,3 +5056,4 @@
 </body>
 
 </html>
+
