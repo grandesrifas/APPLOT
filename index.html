@@ -1805,14 +1805,14 @@
 
     const lotteryTimes = {
         PANAMA: ['3:00 PM'],
-        NICA: ['12:00 PM', '4:00 PM', '7:00 PM', '10:00 PM'],
+        NICA: ['1:00 PM', '4:00 PM', '7:00 PM', '10:00 PM'],
         MONAZO: ['1:55 PM', '5:30 PM', '8:30 PM'],
         LAPRIMERA: ['11:00 AM', '7:00 PM'],
         TICA: ['8:30 PM'],
         NEWYORK: ['1:30 PM', '9:30 PM'],
         // Reventado usa los mismos horarios que la lotería base
         REVENTADO_PANAMA: ['3:00 PM'],
-        REVENTADO_NICA: ['12:00 PM', '4:00 PM', '7:00 PM', '10:00 PM'],
+        REVENTADO_NICA: ['1:00 PM', '4:00 PM', '7:00 PM', '10:00 PM'],
         REVENTADO_MONAZO: ['1:55 PM', '5:30 PM', '8:30 PM'],
         REVENTADO_LAPRIMERA: ['11:00 AM', '7:00 PM'],
         REVENTADO_TICA: ['8:30 PM'],
@@ -2004,19 +2004,31 @@
         }
     }
 
-    function removeNumber(index) {
-        // Obtener el número y la cantidad de pedazos antes de eliminar
-        const number = numbers[index].number;
-        const pieces = numbers[index].pieces;
-
-        // Eliminar de la lista
-        numbers.splice(index, 1);
-        updateNumbersList();
-        updateTotal();
-
-        // Actualizar el contador de ventas actuales para este número
-        updateCurrentSales(number, pieces, false); // false indica que es una eliminación
+function removeNumber(index) {
+    // Para números individuales, usar los valores actuales de los selectores
+    const currentLottery = document.getElementById('lotteryType').value;
+    const currentDrawTime = document.getElementById('drawTimeSelect').value;
+    
+    const validationResult = validarHorarioEliminacion(currentLottery, currentDrawTime);
+    
+    if (!validationResult.allowed) {
+        const message = getEliminationBlockMessage(validationResult);
+        showNotification(message, 'warning', 6000);
+        return;
     }
+
+    // Obtener el número y la cantidad de pedazos antes de eliminar
+    const number = numbers[index].number;
+    const pieces = numbers[index].pieces;
+
+    // Eliminar de la lista
+    numbers.splice(index, 1);
+    updateNumbersList();
+    updateTotal();
+
+    // Actualizar el contador de ventas actuales para este número
+    updateCurrentSales(number, pieces, false);
+}
 
     function updateTotal() {
         const total = numbers.reduce((sum, item) => sum + item.subTotal, 0);
@@ -2208,9 +2220,9 @@
 </div>
 `;
 
- const qrDiv = document.getElementById('qrcode');
-qrDiv.innerHTML = '';
-new QRCode(qrDiv, {
+        const qrDiv = document.getElementById('qrcode');
+        qrDiv.innerHTML = '';
+        new QRCode(qrDiv, {
             text: ticket.id,
             width: 100,
             height: 100,
@@ -2309,32 +2321,40 @@ new QRCode(qrDiv, {
         }
     }
 
-    function deleteTicket(ticketId) {
+   function deleteTicket(ticketId) {
+    let tickets = loadTickets();
+    const ticketToDelete = tickets.find(t => t.id === ticketId);
+
+    if (ticketToDelete) {
+        // Validar horario pasando directamente los datos del ticket
+        const validationResult = validarHorarioEliminacion(ticketToDelete.lottery, ticketToDelete.drawTime);
+
+        if (!validationResult.allowed) {
+            const message = getEliminationBlockMessage(validationResult);
+            showNotification(message, 'warning', 6000);
+            return;
+        }
+
+        // Proceder con la eliminación normal
         showConfirm('¿Está seguro de eliminar este ticket?', 'Eliminar Ticket', () => {
-            let tickets = loadTickets();
-            const ticketToDelete = tickets.find(t => t.id === ticketId);
+            tickets = tickets.filter(t => t.id !== ticketId);
+            localStorage.setItem('lotteryTickets', JSON.stringify(tickets));
+            displayTickets();
 
-            if (ticketToDelete) {
-                // Eliminar el ticket
-                tickets = tickets.filter(t => t.id !== ticketId);
-                localStorage.setItem('lotteryTickets', JSON.stringify(tickets));
-                displayTickets();
+            // Recalcular las ventas actuales después de eliminar el ticket
+            calculateCurrentSales();
 
-                // Recalcular las ventas actuales después de eliminar el ticket
-                calculateCurrentSales();
-
-                const currentDate = document.getElementById('salesDate').value;
-                if (currentDate) {
-                    showSalesByDate(currentDate);
-                }
-
-                showNotification('Ticket eliminado correctamente', 'success');
-            } else {
-                showNotification('Ticket no encontrado', 'error');
+            const currentDate = document.getElementById('salesDate').value;
+            if (currentDate) {
+                showSalesByDate(currentDate);
             }
-        });
-    }
 
+            showNotification('Ticket eliminado correctamente', 'success');
+        });
+    } else {
+        showNotification('Ticket no encontrado', 'error');
+    }
+}
     function searchTickets() {
         const searchValue = document.getElementById('searchInput').value.toLowerCase();
         const tickets = loadTickets();
@@ -3672,8 +3692,8 @@ new QRCode(qrDiv, {
         // Calcular diferencia (positiva = sorteo en el futuro, negativa = sorteo ya pasó)
         const diferencia = horaSorteoEnMinutos - horaActualEnMinutos;
 
-        // Si faltan 5 minutos o menos para el sorteo, no permitir venta
-        if (diferencia <= 5 && diferencia >= 0) {
+        // Si faltan 1 minutos o menos para el sorteo, no permitir venta
+        if (diferencia <= 1 && diferencia >= 0) {
             return false;
         }
 
@@ -3686,6 +3706,75 @@ new QRCode(qrDiv, {
         // Si faltan más de 5 minutos, permitir venta
         return true;
     }
+function validarHorarioEliminacion(lotteryType = null, drawTime = null) {
+    // Si no se pasan parámetros, usar los valores actuales de los selectores
+    if (!lotteryType) {
+        lotteryType = document.getElementById('lotteryType').value;
+    }
+    if (!drawTime) {
+        drawTime = document.getElementById('drawTimeSelect').value;
+    }
+
+    // Si no hay hora de sorteo, permitir eliminación
+    if (!drawTime) {
+        return { allowed: true };
+    }
+
+    // Para PANAMA y REVENTADO_PANAMA, usar la hora por defecto
+    if (lotteryType === 'PANAMA' || lotteryType === 'REVENTADO_PANAMA') {
+        drawTime = '3:00 PM';
+    }
+
+    const ahora = new Date();
+    const horaActual = ahora.getHours();
+    const minutoActual = ahora.getMinutes();
+
+    // Convertir hora del sorteo (ej: "3:00 PM" -> 15:00)
+    let [tiempo, periodo] = drawTime.split(' ');
+    let [hora, minutos] = tiempo.split(':').map(Number);
+
+    // Convertir a formato 24 horas
+    if (periodo === 'PM' && hora !== 12) {
+        hora += 12;
+    } else if (periodo === 'AM' && hora === 12) {
+        hora = 0;
+    }
+
+    // Calcular tiempo actual y tiempo de sorteo en minutos
+    const horaSorteoEnMinutos = hora * 60 + minutos;
+    const horaActualEnMinutos = horaActual * 60 + minutoActual;
+
+    // Calcular diferencia (positiva = sorteo en el futuro, negativa = sorteo ya pasó)
+    const diferencia = horaSorteoEnMinutos - horaActualEnMinutos;
+
+    // Si faltan 1 minutos o menos para el sorteo, no permitir eliminación
+    if (diferencia <= 1 && diferencia >= 0) {
+        const minutosRestantes = Math.max(0, diferencia);
+        return { 
+            allowed: false, 
+            reason: 'pre_sorteo',
+            drawTime: drawTime,
+            minutesLeft: minutosRestantes
+        };
+    }
+
+    // Si el sorteo ya pasó, permitir eliminación solo después de 20 minutos
+    if (diferencia < 0) {
+        const minutosPasados = Math.abs(diferencia);
+        if (minutosPasados <= 10) {
+            const minutosRestantes = 10 - minutosPasados;
+            return { 
+                allowed: false, 
+                reason: 'post_sorteo',
+                drawTime: drawTime,
+                minutesLeft: minutosRestantes
+            };
+        }
+    }
+
+    // Si faltan más de 1 minuto, permitir eliminación
+    return { allowed: true };
+}
     // Establecer límite global para billetes (4 cifras)
     function setGlobalBilletesLimit() {
         const lottery = document.getElementById('limitBilleteLotteryType').value;
@@ -4591,7 +4680,7 @@ new QRCode(qrDiv, {
 
     // Variables para porcentajes y nombre del vendedor
     let sellerPercentage = 13; // Porcentaje por defecto del vendedor
-    let sellerName = "Vendedor"; // Nombre por defecto del vendedor
+    let sellerName = "XXXXX"; // Nombre por defecto del vendedor
 
     // Inicializar porcentaje y nombre desde localStorage
     function initSellerPercentage() {
@@ -4915,7 +5004,7 @@ new QRCode(qrDiv, {
 
                 // Validar horario antes de verificar límites
                 if (!validarHorarioVenta()) {
-                    showNotification('No se pueden vender números. Ventas bloqueadas 5 minutos antes y 20 minutos después del sorteo.', 'warning');
+                    showNotification('No se pueden vender números. Ventas bloqueadas 1 minutos antes y 20 minutos después del sorteo.', 'warning');
                     return; // ESTE RETURN FALTABA
                 }
 
@@ -5055,5 +5144,3 @@ new QRCode(qrDiv, {
 </body>
 
 </html>
-
-
