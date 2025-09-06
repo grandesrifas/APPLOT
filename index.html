@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOTTERY</title>
+    <title>LOTERY</title>
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest"
         href="data:application/json;base64,eyJuYW1lIjoiU2lzdGVtYSBkZSBMb3RlcmlhIiwic2hvcnRfbmFtZSI6IkxvdGVyaWEiLCJzdGFydF91cmwiOiIvIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2ZmZmZmZiIsInRoZW1lX2NvbG9yIjoiIzAwN2JmZiJ9">
@@ -1101,6 +1102,339 @@
             border: 2px solid #3b82f6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
         }
+/* Estilos para el menú hamburguesa */
+.menu-hamburger {
+    position: relative;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    background: linear-gradient(135deg, #8e9eab 0%, #6c7b7f 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    width: 48px;
+    height: 42px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(142, 158, 171, 0.4);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-hamburger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(142, 158, 171, 0.5);
+    background: linear-gradient(135deg, #a8b8c2 0%, #8e9eab 100%);
+}
+
+.hamburger-icon {
+    width: 24px;
+    height: 18px;
+    position: relative;
+    transform: rotate(0deg);
+    transition: .5s ease-in-out;
+    cursor: pointer;
+}
+
+.hamburger-icon span {
+    display: block;
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    background: white;
+    border-radius: 3px;
+    opacity: 1;
+    left: 0;
+    transform: rotate(0deg);
+    transition: .25s ease-in-out;
+}
+
+.hamburger-icon span:nth-child(1) {
+    top: 0px;
+}
+
+.hamburger-icon span:nth-child(2) {
+    top: 7px;
+}
+
+.hamburger-icon span:nth-child(3) {
+    top: 14px;
+}
+
+.hamburger-icon.open span:nth-child(1) {
+    top: 7px;
+    transform: rotate(135deg);
+}
+
+.hamburger-icon.open span:nth-child(2) {
+    opacity: 0;
+    left: -60px;
+}
+
+.hamburger-icon.open span:nth-child(3) {
+    top: 7px;
+    transform: rotate(-135deg);
+}
+
+.menu-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.menu-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.menu-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid white;
+}
+
+.menu-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-item:hover {
+    background-color: #f8f9fa;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 12px 12px;
+}
+
+.menu-item:first-child {
+    border-radius: 12px 12px 0 0;
+}
+
+.menu-icon {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: 998;
+    display: none;
+}
+
+.menu-overlay.show {
+    display: block;
+}
+
+/* Estilo para el botón de lápiz */
+.pencil-button {
+    position: relative;
+    background: linear-gradient(135deg, #8e9eab 0%, #6c7b7f 100%);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(142, 158, 171, 0.4);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-left: 15px;
+}
+
+.pencil-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(142, 158, 171, 0.5);
+    background: linear-gradient(135deg, #a8b8c2 0%, #8e9eab 100%);
+}
+
+/* Modal para seguidillas */
+.seguidilla-modal {
+    display: none;
+    position: fixed;
+    z-index: 10002;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+}
+
+.seguidilla-modal-content {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    margin: 10% auto;
+    padding: 25px;
+    border: none;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease;
+}
+
+.seguidilla-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 15px;
+}
+
+.seguidilla-header h3 {
+    margin: 0;
+    color: #495057;
+    font-size: 1.4em;
+}
+
+.close-seguidilla {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-seguidilla:hover {
+    color: #333;
+}
+
+.seguidilla-form {
+    display: grid;
+    gap: 15px;
+}
+
+.seguidilla-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    align-items: end;
+}
+
+.seguidilla-row .seguidilla-input-group:last-child {
+    max-width: 80px;
+}
+
+.seguidilla-input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.seguidilla-input-group label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #495057;
+    font-size: 14px;
+}
+
+.seguidilla-input-group input {
+    padding: 12px;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #ffffff;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.seguidilla-input-group input:focus {
+    outline: none;
+    border-color: #f39c12;
+    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
+}
+
+.seguidilla-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.seguidilla-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.seguidilla-btn.add {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+.seguidilla-btn.add:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
+}
+
+.seguidilla-btn.cancel {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
+}
+
+.seguidilla-btn.cancel:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.5);
+}
+
+.seguidilla-info {
+    background: #e7f3ff;
+    border: 1px solid #bee5eb;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    color: #0c5460;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
     </style>
 </head>
 
@@ -1116,14 +1450,23 @@
     </div>
 
     <div id="mainPage" class="container" style="display: none;">
-        <!-- Fecha y hora actual -->
-        <div id="datetime" style="text-align: right; margin-bottom: 15px; font-size: 1.1em;"></div>
-
-        <!-- Campo para el nombre del cliente -->
-        <div class="input-group" style="margin-bottom: 15px;">
-            <input type="text" id="customerName" placeholder="Nombre del Cliente">
+<!-- Contenedor para fecha/hora y menú hamburguesa -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+    <div id="datetime" style="font-size: 1.1em;"></div>
+    <!-- Menú hamburguesa -->
+    <button class="menu-hamburger" onclick="toggleMenu()">
+        <div class="hamburger-icon" id="hamburgerIcon">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
+    </button>
+</div>
 
+<!-- Campo para el nombre del cliente -->
+<div class="input-group" style="margin-bottom: 15px;">
+    <input type="text" id="customerName" placeholder="Nombre del Cliente">
+</div>
         <!-- Selección de lotería y hora en una fila -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
             <div class="input-group">
@@ -1193,10 +1536,40 @@
 
         <div id="totalValue" class="total">VALOR DE TICKET: 0.00$</div>
 
-        <button onclick="generateTicket()">GENERAR TICKET</button>
-        <button onclick="showSalesPage()">VER VENTAS</button>
-        <button onclick="showNumberSalesPage()">TIEMPOS VENDIDOS</button>
-        <button onclick="showVerifyWinnersPage()">Verificar Ganadores</button>
+<div style="display: flex; align-items: center; gap: 10px;">
+    <button onclick="generateTicket()" style="flex: 1;">GENERAR TICKET</button>
+    <button class="pencil-button" onclick="openSeguidillaModal()" title="Entrada Rápida - Seguidillas">
+        ✏️
+    </button>
+</div>
+
+
+<!-- Menú desplegable -->
+<div class="menu-dropdown" id="menuDropdown">
+    <div class="menu-item" onclick="showSalesPage()">
+        <span class="menu-icon">💰</span>
+        <span>Ver Ventas</span>
+    </div>
+    <div class="menu-item" onclick="showNumberSalesPage()">
+        <span class="menu-icon">📊</span>
+        <span>Tiempos Vendidos</span>
+    </div>
+    <div class="menu-item" onclick="showVerifyWinnersPage()">
+        <span class="menu-icon">🏆</span>
+        <span>Verificar Ganadores</span>
+    </div>
+    <div class="menu-item" onclick="showConfigPage()">
+        <span class="menu-icon">⚙️</span>
+        <span>Configurar Límites</span>
+    </div>
+    <div class="menu-item" onclick="openPercentageModal()">
+        <span class="menu-icon">👤</span>
+        <span>Configurar Usuario</span>
+    </div>
+</div>
+
+<!-- Overlay para cerrar menú -->
+<div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
 
         <!-- Vista previa del ticket -->
         <div id="ticketPreview" class="ticket-preview">
@@ -1389,7 +1762,6 @@
             <button onclick="checkWinningTickets()" style="margin-top: 15px;">Verificar Ganadores</button>
         </div>
 
-        <button onclick="showConfigPage()">Configurar Límites</button>
 
         <!-- Resultados de los tickets ganadores -->
         <div id="winningTicketsResult" style="margin-top: 20px;"></div>
@@ -1623,6 +1995,44 @@
             <button class="keyboard-btn enter" onclick="submitNumber()">Enter</button>
         </div>
     </div>
+
+    <!-- Modal para seguidillas -->
+<div id="seguidillaModal" class="seguidilla-modal">
+    <div class="seguidilla-modal-content">
+        <div class="seguidilla-header">
+            <h3>Entrada Rápida - Seguidillas</h3>
+            <button class="close-seguidilla" onclick="closeSeguidillaModal()">&times;</button>
+        </div>
+        
+        <div class="seguidilla-info">
+            <strong>💡 Instrucciones:</strong><br>
+            Ingresa el rango de números (solo 2 cifras) y la cantidad de tiempos para cada número.<br>
+            <strong>Ejemplo:</strong> Del 00 al 50 por 10 tiempos cada uno.
+        </div>
+
+        <div class="seguidilla-form">
+            <div class="seguidilla-row">
+                <div class="seguidilla-input-group">
+                    <label for="seguidillaDesde">Desde:</label>
+                    <input type="number" id="seguidillaDesde" min="0" max="99" placeholder="00">
+                </div>
+                <div class="seguidilla-input-group">
+                    <label for="seguidillaHasta">Hasta:</label>
+                    <input type="number" id="seguidillaHasta" min="0" max="99" placeholder="99">
+                </div>
+                <div class="seguidilla-input-group">
+                    <label for="seguidillaTiempos">Tiempos:</label>
+                    <input type="number" id="seguidillaTiempos" min="1" placeholder="1">
+                </div>
+            </div>
+            
+            <div class="seguidilla-buttons">
+                <button class="seguidilla-btn add" onclick="addSeguidilla()">Agregar</button>
+                <button class="seguidilla-btn cancel" onclick="closeSeguidillaModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 </body>
@@ -2246,6 +2656,7 @@ function removeNumber(index) {
     }
 
     function showSalesPage() {
+        closeMenu();
         // Ocultar todas las páginas excepto la de ventas
         document.getElementById('mainPage').style.display = 'none';
         document.getElementById('salesPage').style.display = 'block';
@@ -2431,6 +2842,7 @@ function removeNumber(index) {
 
     // También modifica la función showNumberSalesPage para mostrar el resumen inmediatamente
     function showNumberSalesPage() {
+        closeMenu();
         document.getElementById('mainPage').style.display = 'none';
         document.getElementById('salesPage').style.display = 'none';
         document.getElementById('numberSalesPage').style.display = 'block';
@@ -2997,6 +3409,7 @@ function removeNumber(index) {
 
     // Función para mostrar la página de verificación de ganadores
     function showVerifyWinnersPage() {
+         closeMenu(); 
         document.getElementById('mainPage').style.display = 'none';
         document.getElementById('salesPage').style.display = 'none';
         document.getElementById('numberSalesPage').style.display = 'none';
@@ -3331,6 +3744,7 @@ function removeNumber(index) {
 
     // Mostrar la página de configuración
     function showConfigPage() {
+         closeMenu();
         document.getElementById('mainPage').style.display = 'none';
         document.getElementById('salesPage').style.display = 'none';
         document.getElementById('numberSalesPage').style.display = 'none';
@@ -3775,6 +4189,23 @@ function validarHorarioEliminacion(lotteryType = null, drawTime = null) {
     // Si faltan más de 1 minuto, permitir eliminación
     return { allowed: true };
 }
+// Función para generar mensaje específico de eliminación
+function getEliminationBlockMessage(validationResult) {
+    const { reason, drawTime, minutesLeft } = validationResult;
+    
+    if (reason === 'pre_sorteo') {
+        if (minutesLeft === 0) {
+            return `🚫 ELIMINACIÓN BLOQUEADA\n\nEl sorteo de las ${drawTime} está a punto de iniciar.\n\nDebes esperar hasta 20 minutos después del sorteo para eliminar tickets.`;
+        } else {
+            return `🚫 ELIMINACIÓN BLOQUEADA\n\nFalta ${Math.ceil(minutesLeft)} minuto(s) para el sorteo de las ${drawTime}.\n\nLa eliminación se bloquea 1 minuto antes del sorteo.`;
+        }
+    } else if (reason === 'post_sorteo') {
+        return `🚫 ELIMINACIÓN BLOQUEADA\n\nEl sorteo de las ${drawTime} ya ocurrió.\n\nDebes esperar ${Math.ceil(minutesLeft)} minuto(s) más para eliminar tickets.\n\n(Se permite eliminar 20 minutos después del sorteo)`;
+    }
+    
+    return 'No se puede eliminar el ticket en este momento.';
+}
+
     // Establecer límite global para billetes (4 cifras)
     function setGlobalBilletesLimit() {
         const lottery = document.getElementById('limitBilleteLotteryType').value;
@@ -4695,28 +5126,27 @@ function validarHorarioEliminacion(lotteryType = null, drawTime = null) {
         }
     }
 
-    // Función modificada para agregar breakdown de porcentajes al resumen
     // Función corregida para mostrar el nombre del vendedor
-    function addPercentageBreakdown(summaryBox, totalAmount) {
-        // Remover breakdown previo si existe
-        const existingBreakdown = summaryBox.querySelector('.percentage-breakdown');
-        if (existingBreakdown) {
-            existingBreakdown.remove();
-        }
+   function addPercentageBreakdown(summaryBox, totalAmount) {
+    // Remover breakdown previo si existe
+    const existingBreakdown = summaryBox.querySelector('.percentage-breakdown');
+    if (existingBreakdown) {
+        existingBreakdown.remove();
+    }
 
-        // Remover botón previo si existe
-        const existingButton = summaryBox.querySelector('.percentage-config-button');
-        if (existingButton) {
-            existingButton.remove();
-        }
+    // Remover botón previo si existe
+    const existingButton = summaryBox.querySelector('.percentage-config-button');
+    if (existingButton) {
+        existingButton.remove();
+    }
 
-        // Calcular y mostrar porcentajes siempre, incluso si totalAmount es 0
-        const sellerAmount = (totalAmount * sellerPercentage) / 100;
-        const adminAmount = totalAmount - sellerAmount;
+    // Calcular y mostrar porcentajes siempre, incluso si totalAmount es 0
+    const sellerAmount = (totalAmount * sellerPercentage) / 100;
+    const adminAmount = totalAmount - sellerAmount;
 
-        const breakdown = document.createElement('div');
-        breakdown.className = 'percentage-breakdown';
-        breakdown.innerHTML = `
+    const breakdown = document.createElement('div');
+    breakdown.className = 'percentage-breakdown';
+    breakdown.innerHTML = `
         <div class="percentage-item seller">
             <div class="percentage-value">$${sellerAmount.toFixed(2)}</div>
             <div class="percentage-label">${sellerName} (${sellerPercentage}%)</div>
@@ -4727,18 +5157,13 @@ function validarHorarioEliminacion(lotteryType = null, drawTime = null) {
         </div>
     `;
 
-        summaryBox.appendChild(breakdown);
+    summaryBox.appendChild(breakdown);
 
-        // Agregar botón de configuración SIEMPRE, sin condición
-        const configButton = document.createElement('button');
-        configButton.className = 'percentage-config-button';
-        configButton.textContent = 'Configurar Vendedor';
-        configButton.onclick = openPercentageModal;
-        summaryBox.appendChild(configButton);
-    }
+}
 
     // Abrir modal de configuración de porcentaje
     function openPercentageModal() {
+         closeMenu();
         const modal = document.getElementById('percentageModal');
         const input = document.getElementById('sellerPercentageInput');
         const nameInput = document.getElementById('sellerNameInput');
@@ -5121,6 +5546,157 @@ function validarHorarioEliminacion(lotteryType = null, drawTime = null) {
 
         showNotification('Premio limpiado', 'success');
     }
+
+    // Variables para el menú
+let menuOpen = false;
+
+// Función para alternar el menú
+function toggleMenu() {
+    if (menuOpen) {
+        closeMenu();
+    } else {
+        openMenu();
+    }
+}
+
+// Función para abrir el menú
+function openMenu() {
+    const dropdown = document.getElementById('menuDropdown');
+    const overlay = document.getElementById('menuOverlay');
+    const icon = document.getElementById('hamburgerIcon');
+    
+    dropdown.classList.add('show');
+    overlay.classList.add('show');
+    icon.classList.add('open');
+    menuOpen = true;
+}
+
+// Función para cerrar el menú
+function closeMenu() {
+    const dropdown = document.getElementById('menuDropdown');
+    const overlay = document.getElementById('menuOverlay');
+    const icon = document.getElementById('hamburgerIcon');
+    
+    dropdown.classList.remove('show');
+    overlay.classList.remove('show');
+    icon.classList.remove('open');
+    menuOpen = false;
+}
+
+// Cerrar menú con tecla Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && menuOpen) {
+        closeMenu();
+    }
+});
+
+// Funciones para el modal de seguidillas
+function openSeguidillaModal() {
+    // Verificar que haya loterÃ­a seleccionada
+    const lotteryType = document.getElementById('lotteryType').value;
+    if (!lotteryType) {
+        showNotification('Por favor seleccione una loteria primero', 'warning');
+        return;
+    }
+
+    // Verificar hora de sorteo para loterÃ­as que no sean PANAMA
+    if (lotteryType !== 'PANAMA' && lotteryType !== 'REVENTADO_PANAMA') {
+        const drawTime = document.getElementById('drawTimeSelect').value;
+        if (!drawTime) {
+            showNotification('Por favor seleccione hora de sorteo primero', 'warning');
+            return;
+        }
+    }
+
+    const modal = document.getElementById('seguidillaModal');
+    modal.style.display = 'block';
+    
+    // Limpiar campos
+    document.getElementById('seguidillaDesde').value = '';
+    document.getElementById('seguidillaHasta').value = '';
+    document.getElementById('seguidillaTiempos').value = '';
+}
+
+function closeSeguidillaModal() {
+    const modal = document.getElementById('seguidillaModal');
+    modal.style.display = 'none';
+}
+
+function addSeguidilla() {
+    const desde = parseInt(document.getElementById('seguidillaDesde').value);
+    const hasta = parseInt(document.getElementById('seguidillaHasta').value);
+    const tiempos = parseInt(document.getElementById('seguidillaTiempos').value);
+    const lotteryType = document.getElementById('lotteryType').value;
+
+    // Validaciones
+    if (isNaN(desde) || isNaN(hasta) || isNaN(tiempos)) {
+        showNotification('Por favor complete todos los campos', 'warning');
+        return;
+    }
+
+    if (desde < 0 || desde > 99 || hasta < 0 || hasta > 99) {
+        showNotification('Los numeros deben estar entre 00 y 99', 'warning');
+        return;
+    }
+
+    if (desde > hasta) {
+        showNotification('El numero "Desde" debe ser menor o igual al "Hasta"', 'warning');
+        return;
+    }
+
+    if (tiempos <= 0) {
+        showNotification('Los tiempos deben ser mayor que 0', 'warning');
+        return;
+    }
+
+    // Validar horario antes de procesar
+    if (!validarHorarioVenta()) {
+        showNotification('No se pueden agregar numeros. Ventas bloqueadas 1 minuto antes y 20 minutos despues del sorteo.', 'warning');
+        return;
+    }
+
+    let processed = 0;
+    let blocked = 0;
+
+    // Procesar la seguidilla
+    for (let i = desde; i <= hasta; i++) {
+        const number = i.toString().padStart(2, '0');
+        
+        // Verificar lÃ­mites
+        if (checkLimits(number, tiempos)) {
+            const subTotal = calculatePrice(number, tiempos, lotteryType);
+            numbers.push({ number, pieces: tiempos, subTotal });
+            updateCurrentSales(number, tiempos, true);
+            processed++;
+        } else {
+            blocked++;
+        }
+    }
+
+    // Actualizar la interfaz
+    if (processed > 0) {
+        updateNumbersList();
+        updateTotal();
+        
+        let message = `Seguidilla agregada: ${processed} numeros procesados`;
+        if (blocked > 0) {
+            message += ` (${blocked} bloqueados por li­mites)`;
+        }
+        
+        showNotification(message, 'success');
+        closeSeguidillaModal();
+    } else {
+        showNotification('No se pudieron agregar numeros debido a los li­mites establecidos', 'warning');
+    }
+}
+
+// Cerrar modal al hacer clic fuera
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('seguidillaModal');
+    if (event.target === modal) {
+        closeSeguidillaModal();
+    }
+});
 
     // Cerrar modal al hacer clic fuera de él
     window.onclick = function (event) {
