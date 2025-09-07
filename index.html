@@ -2616,7 +2616,6 @@ function removeNumber(index) {
             <p style="margin: 3px 0;"><strong>Vendedor:</strong> ${sellerName}</p>
             <p style="margin: 6px 0 3px 0;"><strong>ID Ticket:</strong></p>
             <p style="margin: 3px 0;">${ticket.id}</p>
-            ${ticket.paid ? '<p style="margin: 10px 0; color: #28a745; font-weight: bold;">✅ TICKET PAGADO</p>' : '<p style="margin: 10px 0; color: #dc3545; font-weight: bold;">⏳ PENDIENTE DE PAGO</p>'}
         </div>
         <div class="ticket-numbers" style="border-top: 1px solid black; border-bottom: 1px solid black; margin: 20px 0; padding: 20px 0;">
             ${ticket.numbers.map(n => `
@@ -2642,7 +2641,7 @@ function removeNumber(index) {
         correctLevel: QRCode.CorrectLevel.H
     });
 
-    // Actualizar los botones según el estado del ticket
+    // Botones: solo mostrar "MARCAR COMO PAGADO" si NO está pagado
     const actionsDiv = preview.querySelector('.ticket-actions');
     if (ticket.paid) {
         actionsDiv.innerHTML = `
@@ -2659,7 +2658,6 @@ function removeNumber(index) {
 
     preview.style.display = 'block';
 }
-
     function closeTicket() {
         document.getElementById('ticketPreview').style.display = 'none';
         numbers = [];
@@ -2831,18 +2829,16 @@ function removeNumber(index) {
     }
 
 function verificarTicket(ticket) {
+    if (ticket.paid) {
+        showNotification('⚠️ Este ticket ya ha sido pagado anteriormente', 'warning');
+    } else {
+        showNotification('📄 Ticket encontrado', 'success');
+    }
+    
     // Mostrar el ticket escaneado
     showTicketPreview(ticket);
     showMainPage();
-    
-    // Mostrar información adicional del estado del ticket
-    if (ticket.paid) {
-        showNotification('✅ Este ticket ya ha sido pagado', 'info');
-    } else {
-        showNotification('📄 Ticket encontrado y mostrado', 'success');
-    }
 }
-
   function marcarComoPagado(ticketId) {
     let tickets = loadTickets();
     const ticketIndex = tickets.findIndex(t => t.id === ticketId);
@@ -2850,9 +2846,9 @@ function verificarTicket(ticket) {
         tickets[ticketIndex].paid = true;
         localStorage.setItem('lotteryTickets', JSON.stringify(tickets));
         
-        showNotification('✅ Ticket marcado como pagado', 'success');
+        showNotification('✅ Ticket marcado como pagado correctamente', 'success');
         
-        // Actualizar la vista previa del ticket
+        // Actualizar la vista previa del ticket (sin mostrar estado)
         showTicketPreview(tickets[ticketIndex]);
         
         // Actualizar la lista de tickets si estamos en la página de ventas
