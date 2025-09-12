@@ -2879,8 +2879,8 @@ function verificarTicket(ticket) {
     }
 
     // Mostrar el ticket escaneado
+    showMainPageOnly(); // Usar la función que NO cierra la vista previa
     showTicketPreview(ticket);
-    showMainPage();
 }
   function marcarComoPagado(ticketId) {
     let tickets = loadTickets();
