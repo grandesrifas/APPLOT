@@ -2878,8 +2878,7 @@ function verificarTicket(ticket) {
         showNotification('📄 Ticket encontrado', 'success');
     }
 
-    // Mostrar el ticket escaneado
-    showMainPageOnly(); // Usar la función que NO cierra la vista previa
+    // Mostrar el ticket escaneado directamente (sin cambiar de página)
     showTicketPreview(ticket);
 }
   function marcarComoPagado(ticketId) {
