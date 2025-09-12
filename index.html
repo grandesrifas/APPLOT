@@ -2736,8 +2736,8 @@ function viewTicket(ticketId) {
     const tickets = loadTickets();
     const ticket = tickets.find(t => t.id === ticketId);
     if (ticket) {
-        showMainPage(); // Cambiar a página principal primero
-        showTicketPreview(ticket); // Luego mostrar la vista previa
+        showMainPageOnly(); // Usar la nueva función
+        showTicketPreview(ticket);
     }
 }
 
@@ -2878,9 +2878,32 @@ function verificarTicket(ticket) {
         showNotification('📄 Ticket encontrado', 'success');
     }
 
-    // Mostrar el ticket escaneado directamente (sin cambiar de página)
-    showTicketPreview(ticket);
+    // Cambiar a página principal sin cerrar vista previa
+    showMainPageOnly();
+    
+    // Mostrar la vista previa del ticket
+    setTimeout(() => {
+        showTicketPreview(ticket);
+    }, 200);
 }
+
+function showMainPageOnly() {
+    // Ocultar todas las páginas excepto la principal
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('salesPage').style.display = 'none';
+    document.getElementById('numberSalesPage').style.display = 'none';
+    document.getElementById('verifyWinnersPage').style.display = 'none';
+    document.getElementById('configPage').style.display = 'none';
+
+    // Mostrar la página principal (SIN cerrar vista previa)
+    document.getElementById('mainPage').style.display = 'block';
+
+    // Solo limpiamos los campos de entrada de números, pero mantenemos la lotería y hora
+    document.getElementById('number').value = '';
+    document.getElementById('pieces').value = '';
+    document.getElementById('quickInput').value = '';
+}
+
   function marcarComoPagado(ticketId) {
     let tickets = loadTickets();
     const ticketIndex = tickets.findIndex(t => t.id === ticketId);
