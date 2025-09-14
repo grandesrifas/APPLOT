@@ -2905,29 +2905,45 @@ function showTicketPreview(ticket) {
         displayTickets(filteredTickets);
     }
 
-    async function compartirTicket() {
-        try {
-            const ticketElement = document.getElementById('ticketPreview');
-            const actionButtons = ticketElement.querySelector('.ticket-actions');
+   async function compartirTicket() {
+    try {
+        const ticketElement = document.getElementById('ticketPreview');
+        const actionButtons = ticketElement.querySelector('.ticket-actions');
 
-            actionButtons.style.display = 'none';
+        // Ocultar los botones y esperar un momento para asegurar que se aplique
+        actionButtons.style.display = 'none';
+        actionButtons.style.visibility = 'hidden';
+        
+        // Esperar un poco para asegurar que los cambios se apliquen
+        await new Promise(resolve => setTimeout(resolve, 100));
 
-            const canvas = await html2canvas(ticketElement, {
-                scale: 2,
-                backgroundColor: '#ffffff',
-                logging: false
-            });
+        const canvas = await html2canvas(ticketElement, {
+            scale: 2,
+            backgroundColor: '#ffffff',
+            logging: false,
+            useCORS: true,
+            allowTaint: true
+        });
 
-            actionButtons.style.display = 'flex';
+        // Restaurar los botones
+        actionButtons.style.display = 'grid';
+        actionButtons.style.visibility = 'visible';
 
-            const base64 = canvas.toDataURL('image/png');
-            Android.shareTicketFromAndroid(base64);
-        } catch (error) {
-            console.error('Error al compartir:', error);
-            showNotification('No se pudo compartir el ticket. Intente de nuevo.');
+        const base64 = canvas.toDataURL('image/png');
+        Android.shareTicketFromAndroid(base64);
+    } catch (error) {
+        console.error('Error al compartir:', error);
+        showNotification('No se pudo compartir el ticket. Intente de nuevo.');
+        
+        // Asegurar que los botones se restauren incluso si hay error
+        const ticketElement = document.getElementById('ticketPreview');
+        const actionButtons = ticketElement.querySelector('.ticket-actions');
+        if (actionButtons) {
+            actionButtons.style.display = 'grid';
+            actionButtons.style.visibility = 'visible';
         }
     }
-
+}
     let html5QrcodeScanner = null;
 
     async function toggleScanner() {
@@ -5967,6 +5983,7 @@ window.addEventListener('click', function(event) {
 </body>
 
 </html>
+
 
 
 
